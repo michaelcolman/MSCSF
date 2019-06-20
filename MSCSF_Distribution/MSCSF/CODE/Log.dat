@@ -1,0 +1,134 @@
+
+Sim time: Mon Jun 17 18:23:26 2019
+Model version ran: Single_cell_3D
+Settings:	
+
+
+Sim time: Mon Jun 17 18:23:37 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing 
+
+
+Sim time: Mon Jun 17 18:30:20 2019
+Model version ran: Single_cell_3D
+Settings:	
+
+
+Sim time: Mon Jun 17 18:30:59 2019
+Model version ran: Single_cell_3D
+Settings:	
+
+
+Sim time: Mon Jun 17 18:31:34 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing 
+
+
+Sim time: Mon Jun 17 18:45:19 2019
+Model version ran: Single_cell_3D
+Settings:	
+Sim time: Mon Jun 17 18:45:23 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing 
+
+
+Sim time: Mon Jun 17 18:45:48 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing 
+Sim time: Mon Jun 17 18:46:09 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing RyR_het map 
+Sim time: Mon Jun 17 18:46:14 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing RyR_het random 
+
+
+Sim time: Mon Jun 17 18:51:35 2019
+Model version ran: Single_cell_3D
+Settings:	CaSR 1.0 Cai 0.1 
+
+
+Sim time: Mon Jun 17 18:51:43 2019
+Model version ran: Single_cell_3D
+Settings:	CaSR 1.0 Cai 0.1 Sim_cell_size testing 
+
+
+Sim time: Mon Jun 17 19:01:22 2019
+Model version ran: Single_cell_native
+Settings:	Model dAM_VA 
+
+
+Sim time: Mon Jun 17 19:02:08 2019
+Model version ran: Single_cell_native
+Settings:	Model dAM_VA Celltype PV 
+
+
+Sim time: Mon Jun 17 19:02:16 2019
+Model version ran: Single_cell_native
+Settings:	Model dAM_VA Celltype CT 
+
+
+Sim time: Mon Jun 17 19:02:18 2019
+Model version ran: Single_cell_native
+Settings:	Model dAM_VA Celltype BB 
+
+
+Sim time: Mon Jun 17 19:02:29 2019
+Model version ran: Single_cell_3D
+Settings:	Model dAM_VA Celltype BB 
+
+
+Sim time: Mon Jun 17 19:02:45 2019
+Model version ran: Tissue_native
+Settings:	Tissue_model Canine_atria_VA_control 
+
+
+Sim time: Mon Jun 17 19:02:50 2019
+Model version ran: Tissue_native
+Settings:	Tissue_model Canine_atria_VA_control Tissue_order geo 
+
+
+Sim time: Mon Jun 17 19:05:45 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing 
+
+
+Sim time: Mon Jun 17 19:09:41 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing Total_time 10 
+
+
+Sim time: Mon Jun 17 19:10:27 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing Total_time 10 
+
+
+Sim time: Mon Jun 17 19:11:29 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing Total_time 10 
+
+
+Sim time: Mon Jun 17 19:12:03 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing Total_time 10 
+
+
+Sim time: Tue Jun 18 12:39:57 2019
+Model version ran: Single_cell_3D
+Settings:	Sim_cell_size testing Total_time 10 
+
+
+Sim time: Tue Jun 18 12:50:45 2019
+Model version ran: Single_cell_3D
+Settings:	volds_het random 
+
+
+Sim time: Tue Jun 18 12:50:58 2019
+Model version ran: Single_cell_3D
+Settings:	volds_het random Sim_cell_size testing 
+
+
+Sim time: Wed Jun 19 16:10:42 2019
+Model version ran: Tissue_native
+Settings:	Tissue_order geo Tissue_model Human_vent_wedge 
+

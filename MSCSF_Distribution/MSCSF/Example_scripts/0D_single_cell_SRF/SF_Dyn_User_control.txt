@@ -1,0 +1,13 @@
+12
+SRF_Dyn_PSCR_threshold      0.9
+SRF_Dyn_CaSR_max            1.2
+SRF_Dyn_CaSR_Prange         0.1
+SRF_Dyn_ti_sep_max          1000
+SRF_Dyn_ti_sep_min          200
+SRF_Dyn_ti_width_max        800
+SRF_Dyn_ti_width_min        200
+SRF_Dyn_MD_max              700
+SRF_Dyn_MD_min              100
+SRF_Dyn_duration_width_max   500
+SRF_Dyn_duration_width_min  50
+SRF_Dyn_H                   2.5

@@ -1,0 +1,8 @@
+7
+SRF_DC_PSCRE    1
+SRF_DC_CF       0.4
+SRF_DC_ti_sep   500
+SRF_DC_ti_W1    100
+SRF_DC_ti_W2    200
+SRF_DC_MD       150
+SRF_DC_duration_W   50

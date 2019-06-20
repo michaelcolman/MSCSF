@@ -1,0 +1,12 @@
+11
+BCL 1000 
+Beats 10 
+Celltype PV 
+ISO 0.5 
+INa_scale 0.5 
+Jup_scale 0.5 
+Ito_va_tau_scale 5 
+ICaL_vi_ss_shift -10 
+IKur_va_ss_kscale 2 
+Ito_vi_tau_shift 10 
+Reference Direct_modulation_settings_file

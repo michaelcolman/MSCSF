@@ -1,3 +1,4 @@
 # MSCSF
 The full package for the "multi-scale cardiac simulation framework" in C/C++
-\*Placeholder while associated paper is in production
+
+20/06/2019 - Release version uploaded, with accompanying author revised version of the manuscript (currently under review at PLOS Comp. Biol).

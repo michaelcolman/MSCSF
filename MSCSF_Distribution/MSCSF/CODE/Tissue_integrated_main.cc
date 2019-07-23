@@ -561,8 +561,8 @@ int main(int argc, char *argv[])
     Params_global.ACh_model = Params[0].ACh_model;
 	assign_modification_from_arguments(&Params_global, Argin);					                // lib/Outputs.c
     output_settings(Sim, res_dir_full, Argin.DC_current_mod_arg, Params_global, argc, argv);    // lib/Outputs.c
-	output_settings_tissue(Sim, Tissue, directory);								                // lib/Outputs.c
-	output_settings_0D_cell(Params_global, Sim, CRU[0], directory, SRF[0]);		                // lib/Outputs.c
+	output_settings_tissue(Sim, Tissue, res_dir_full);								                // lib/Outputs.c
+	output_settings_0D_cell(Params_global, Sim, CRU[0], res_dir_full, SRF[0]);		                // lib/Outputs.c
 
 	// Setup complete, simulation running ======\\|
 	time_t rawtime;

@@ -288,7 +288,7 @@ int main(int argc, char *argv[])
 
     // Output settings to screen and file || done here so can output actual settings (rather than inputs) for confidence
     output_settings(Sim, res_dir_full, Argin.DC_current_mod_arg, Params, argc, argv);  // lib/Outputs.c
-    output_settings_0D_cell(Params, Sim, CRU, directory, SRF);				           // lib/Outputs.c
+    output_settings_0D_cell(Params, Sim, CRU, res_dir_full, SRF);			           // lib/Outputs.c
 
     // Setup complete, simulation running ======\\|
 	time_t rawtime;

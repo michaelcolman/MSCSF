@@ -472,7 +472,7 @@ int main(int argc, char *argv[])
     Params_global.Celltype = Params[0].Celltype;	// Just to output baseline model, independent of which model is in cell 0 if multi models used
     assign_modification_from_arguments(&Params_global, Argin);					                // lib/Outputs.c
     output_settings(Sim, res_dir_full, Argin.DC_current_mod_arg, Params_global, argc, argv);    // lib/Outputs.c
-    output_settings_tissue(Sim, Tissue, directory);								                // lib/Outputs.c
+    output_settings_tissue(Sim, Tissue, res_dir_full);							                // lib/Outputs.c
 
     // Setup complete, simulation running ======\\|
     time_t rawtime;

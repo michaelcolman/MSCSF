@@ -283,7 +283,7 @@ int main(int argc, char *argv[])
 	// Update Sim.dt if Params.dt has been explicitly set in "set_parameters" (thus Sim.dt != Params.dt), and dt has NOT been passed as a command-line argument.
 	if (Argin.dt_arg    	== false && Params.dt != Sim.dt) 	Sim.dt = Params.dt;
 	for (int n =0; n < SC.N; n++) myofil[n].dt_myof = Sim.dt; // dt for LSODA solver same as for whole model
-	printf(">Model and version specific parameters setn");
+	printf(">Model and version specific parameters set\n");
 
 	// Now set the default and specific integrated Ca2+ handling parameters - overwrites similar parameters set in native
 	set_parameters_spatial_Ca_defaults(&Params);		// lib/Initialisation.c
@@ -345,7 +345,7 @@ int main(int argc, char *argv[])
 
     // Output settings to screen and file || done here so can output actual settings (rather than inputs) for confidence
     output_settings(Sim, res_dir_full, Argin.DC_current_mod_arg, Params, argc, argv);  // lib/Outputs.c
-    output_settings_3D_cell(Params, Sim, CRU, directory);				               // lib/Outputs.c
+    output_settings_3D_cell(Params, Sim, CRU, res_dir_full);			               // lib/Outputs.c
 
     // Setup complete, simulation running ======\\|
     time_t rawtime;

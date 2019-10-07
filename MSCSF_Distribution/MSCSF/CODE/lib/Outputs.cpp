@@ -583,7 +583,7 @@ void output_settings(Simulation_parameters sim, char const * directory, bool DC_
 	fprintf(so,"INa_scale  = %.02f || INaL_scale  = %.02f || Ito_scale = %.02f || ICaL_scale = %.02f || IKur_scale  = %.02f\n", p.GNa, p.GNaL, p.Gto, p.GCaL, p.GKur);
 	fprintf(so,"\t\t\t\tIKr_scale  = %.02f || IKs_scale   = %.02f || IK1_scale = %.02f || INCX_scale = %.02f || ICaP_scale  = %.02f\n", p.GKr, p.GKs, p.GK1, p.GNCX, p.GCaP);
 	fprintf(so,"\t\t\t\tINab_scale = %.02f || ICab_scale  = %.02f || IKb_scale = %.02f || INaK_scale = %.02f || IClCa_scale = %.02f\n", p.GNab, p.GCab, p.GKb, p.GNaK, p.GClCa);
-	fprintf(so,"\t\t\t\tJup_scale  = %.02f || Jleak_scale = %.02f || || Jrel_scale = %0.2f\n\n", p.Gleak, p.Gup, p.Grel);
+	fprintf(so,"\t\t\t\tJup_scale  = %.02f || Jleak_scale = %.02f || || Jrel_scale = %0.2f\n\n", p.Gup, p.Gleak, p.Grel);
 
 	fprintf(so,"  Time constant scaling:\t");
 	fprintf(so,"INa_va_tau_scale  = %.02f || INa_vi_1_tau_scale = %.02f || INa_vi_2_tau_scale = %.02f || INaL_va_tau_scale = %.02f || INaL_vi_tau_scale = %.02f\n", p.INa_va_tau_scale, p.INa_vi_1_tau_scale, p.INa_vi_2_tau_scale, p.INaL_va_tau_scale, p.INaL_vi_tau_scale);

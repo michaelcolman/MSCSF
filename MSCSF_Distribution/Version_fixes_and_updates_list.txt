@@ -1,6 +1,8 @@
 Version 1.0 Release.
 
 Version list:
+    17/02/2020 - Analysis package added; documentation updated for correct units for Cai in Currents.dat output
+
     07/10/2019 - Fix:   In function "output_settings()", the order of variables Gleak and Gup was the incorrect way round relative to the text
     fprintf(so,"\t\t\t\tJup_scale  = %.02f || Jleak_scale = %.02f || || Jrel_scale = %0.2f\n\n", p.Gleak, p.Gup, p.Grel); 
     >>  fprintf(so,"\t\t\t\tJup_scale  = %.02f || Jleak_scale = %.02f || || Jrel_scale = %0.2f\n\n", p.Gup, p.Gleak, p.Grel);

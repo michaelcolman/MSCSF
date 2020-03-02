@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = g++
-CFLAGS = -O3 -w #-std=c++11
+CFLAGS = -O2 -w #-std=c++11
 CFLAGS2 = -fopenmp
 
 # build options

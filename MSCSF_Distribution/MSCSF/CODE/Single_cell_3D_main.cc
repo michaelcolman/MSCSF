@@ -9,7 +9,7 @@
 // using the Colman-lab spatial Ca2+ handling system.======  //
 // ========================================================  //
 // GNU 3 LICENSE TEXT =====================================  //
-// COPYRIGHT (C) 2016-2019 MICHAEL A. COLMAN ==============  //
+// COPYRIGHT (C) 2016-2020 MICHAEL A. COLMAN ==============  //
 // THIS PROGRAM IS FREE SOFTWARE: YOU CAN REDISTRIBUTE IT =  //
 // AND/OR MODIFY IT UNDER THE TERMS OF THE GNU GENERAL ====  //
 // PUBLIC LICENSE AS PUBLISHED BY THE FREE SOFTWARE =======  //
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 	// End Argument handling ============================//|
 
 	// Set and assign simulation settings ===============\\|
-	// Assigns Sim.{BCL, reference, Beats, Total_time, read/write_state, dt, ..} from Argin struct
+	// Assigns Sim.{Model, BCL, reference, Beats, Total_time, read/write_state, dt, ..} from Argin struct
 	Simulation_parameters Sim;									// Initialise sim parameters struct || lib/Structs.h
 	set_simulation_defaults(&Sim, 0.025);						// (sim struct, dt)					|| lib/Initialisation.c
 	set_simulation_settings(&Sim, Argin, "integrated");			// Set from arguments				|| lib/Initialisation.c
@@ -312,25 +312,32 @@ int main(int argc, char *argv[])
 	printf(">Heterogeneity and modulation parameters set\n");
 
 	// Assign tau ss, which may be defined by model, modification or argumnet
-	if (Argin.tau_ss_arg == true) Params.tau_ss_type = Argin.tau_ss_type; //otherwise default or set in model/modification function
-	// Sets actual time constants from type reference ("slow" to "fast")
-	set_tau_ss(&Params); // lib/CRU.cpp:
-	printf(">Subspace coupling time constants set\n");
-	// end set modification =============================//|
+    if (Argin.tau_ss_arg == true) Params.tau_ss_type = Argin.tau_ss_type; //otherwise default or set in model/modification function
+    // Sets actual time constants from type reference ("slow" to "fast")
+    set_tau_ss(&Params); // lib/CRU.cpp:
+    printf(">Subspace coupling time constants set\n");
+    // end set modification =============================//|
 
-	// Membrane capacitance as a function of cell size ==\\|
-	Params.Cm			= Params.Cm_CRU * CRU.NTOT_CRUs; // Cm CRU not used in calcs other than this
+    // Membrane capacitance as a function of cell size ==\\|
+    Params.Cm			= Params.Cm_CRU * CRU.NTOT_CRUs; // Cm CRU not used in calcs other than this
     CRU.NCRUs_MEM       = CRU.NTOT_CRUs;                 // by default, all CRUs have membrane component
-	printf(">Cm total for whole cell (pre detubulation) = %.2f pF\n", Params.Cm);
-	// End Membrane capacitance / cell size =============//|
+    printf(">Cm total for whole cell (pre detubulation) = %.2f pF\n", Params.Cm);
+    // End Membrane capacitance / cell size =============//|
 
-	// Set local scale params from global params ========\\|
+    // Set local scale params from global params ========\\|
     // Allocate arrays, apply global params to local params
     // for sub-cellular heterogeneity.
+    CRU_map_array_allocation(SC.N, &CRU);
+
     // set local scale factors from global
     for (int n = 0; n < SC.N; n++) set_sub_cellular_local_scale(Params, &Dyad[n], &MEM[n], &SR[n]);  // lib/CRU.cpp
-    for (int n = 0; n < SC.N; n++) Dyad[n].NRyR     = Params.NRyR_mean;
-    for (int n = 0; n < SC.N; n++) Dyad[n].NLTCC    = Params.NLTCC_mean;
+
+    // scale by local het map || lib/CRU.cpp
+    initialise_sub_cellular_het_maps(SC.N, &CRU); // set all maps to 1
+    read_sub_cellular_het_maps(SC, &CRU, PATH, directory);  // read and assign maps, where On
+    set_sub_cellular_local_het_scale(Params, SC.N, Dyad, MEM, SR, CRU); // scale local flux rates by map
+    for (int n = 0; n < SC.N; n++) Dyad[n].NRyR     = Params.NRyR_mean  * CRU.RyR_het_map[n];   // no need for IF, as map[n] = 1 if RyR het is not "map"
+    for (int n = 0; n < SC.N; n++) Dyad[n].NLTCC    = Params.NLTCC_mean * CRU.LTCC_map[n];      // no need for IF, as map[n] = 1 if LTCC het is not "map"
     printf(">Local sub-cellular scaling parameters set\n");
     // End Set local scale params from global params ====//|
 
@@ -646,6 +653,7 @@ int main(int argc, char *argv[])
     free(sr_dir);	
     SC_array_deallocation(&SC);         // lib/Spatial_coupling.cpp
     Ca_array_deallocation(&Ca);			// lib/CRU.cpp
+    CRU_map_array_deallocation(&CRU);   // lib/CRU.cpp
     for (int n = 0; n < SC.N; n++)  Dyad_array_deallocation(&Dyad[n]);	// lib/CRU.cpp
     delete[] Dyad;
     delete[] SR;

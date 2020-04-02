@@ -893,6 +893,11 @@ void output_disclaimer_citations_spatial_cell(Cell_parameters p, Simulation_para
     printf("***NOTE****: the integrated cell models (hybrid minimal/hVM_ORD_s/hAM_CAZ_s) are provided for demonstration and general mechanistic analysis purposes\n");
     printf("IF you intend to use these models for rigorous species and disease specific analysis, you will need to include further AP models and/or fully parameterise and validate those models to your own satisfaction; this framework is intended to be used as the foundation on which to build your own models\n");
     printf("=========================\n");
+
+    printf("\nIf you are using sub-cellular Heterogeneity maps ({RyR/LTCC}_het map; {SERCA/NCX}_het; map_file arguments), you must cite:\n");
+    printf("\tColman, MA et al. Methods (Elsevier) 2020 – Currently corrected proof, please check for updates on journal volume etc. https://doi.org/10.1016/j.ymeth.2020.02.011\n");
+    printf("=========================\n");
+
 }
 // End Output disclaimer for all relevant citations under model conditions ======================//|
 // End Settings and initialisation =======================================================================//|

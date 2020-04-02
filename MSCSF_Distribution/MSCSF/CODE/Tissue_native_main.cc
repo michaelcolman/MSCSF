@@ -120,7 +120,7 @@ int main(int argc, char *argv[])
 	// End Argument handling ============================//|
 
 	// Set and assign simulation settings ===============\\|
-	// Assigns Sim.{BCL, reference, Beats, Total_time, read/write_state, dt, ..} from Argin struct
+	// Assigns Sim.{Model, BCL, reference, Beats, Total_time, read/write_state, dt, ..} from Argin struct
 	Simulation_parameters Sim;									// Initialise sim parameters struct || lib/Structs.h
 	set_simulation_defaults(&Sim, 0.02);						// (sim struct, dt)					|| lib/Initialisation.c
 	set_simulation_settings(&Sim, Argin, "native");				// Set from arguments				|| lib/Initialisation.c

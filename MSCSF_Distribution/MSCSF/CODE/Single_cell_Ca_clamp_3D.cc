@@ -316,9 +316,17 @@ int main(int argc, char *argv[])
     // Set local scale params from global params ========\\|
     // Allocate arrays, apply global params to local params
     // set local scale factors from global
+    CRU_map_array_allocation(SC.N, &CRU);
+
+    // set local scale factors from global
     for (int n = 0; n < SC.N; n++) set_sub_cellular_local_scale(Params, &Dyad[n], &MEM[n], &SR[n]);  // lib/CRU.cpp
-    for (int n = 0; n < SC.N; n++) Dyad[n].NRyR     = Params.NRyR_mean;
-    for (int n = 0; n < SC.N; n++) Dyad[n].NLTCC    = Params.NLTCC_mean;
+
+    // scale by local het map || lib/CRU.cpp
+    initialise_sub_cellular_het_maps(SC.N, &CRU); // set all maps to 1
+    read_sub_cellular_het_maps(SC, &CRU, PATH, directory);  // read and assign maps, where On
+    set_sub_cellular_local_het_scale(Params, SC.N, Dyad, MEM, SR, CRU); // scale local flux rates by map
+    for (int n = 0; n < SC.N; n++) Dyad[n].NRyR     = Params.NRyR_mean  * CRU.RyR_het_map[n];   // no need for IF, as map[n] = 1 if RyR het is not "map"
+    for (int n = 0; n < SC.N; n++) Dyad[n].NLTCC    = Params.NLTCC_mean * CRU.LTCC_map[n];      // no need for IF, as map[n] = 1 if LTCC het is not "map"
     printf(">Local sub-cellular scaling parameters set\n");
     // End Set local scale params from global params ====//|
 
@@ -515,6 +523,7 @@ int main(int argc, char *argv[])
     free(res_dir_full);
     SC_array_deallocation(&SC);         // lib/Spatial_coupling.cpp
     Ca_array_deallocation(&Ca);			// lib/CRU.cpp
+    CRU_map_array_deallocation(&CRU);   // lib/CRU.cpp
     for (int n = 0; n < SC.N; n++)  Dyad_array_deallocation(&Dyad[n]);	// lib/CRU.cpp
     delete[] Dyad;
     delete[] SR;

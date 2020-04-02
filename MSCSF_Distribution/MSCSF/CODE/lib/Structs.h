@@ -1113,7 +1113,7 @@ typedef struct{
 	char const 	*LTCC_map_file;	    // Filename for reading in a LTCC map
 	const char	*LTCC_het;			// "On" or "random" or "map"
 	double 		*LTCC_map;			// LTCC_map
-    const char  *volds_het;         // "Off" or "random" to apply vold_ds het randomly
+    const char  *volds_het;         // "On" or "Off" to apply vold_ds het randomly
     double      *dyad_het_map;      // For outputting the random dyad heterogeneity
 	// End sub-cellular maps==========//|
 	

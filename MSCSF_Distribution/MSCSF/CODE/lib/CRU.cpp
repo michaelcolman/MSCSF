@@ -9,7 +9,7 @@
 // settings and dynamics. =================================  //
 // ========================================================  //
 // GNU 3 LICENSE TEXT =====================================  //
-// COPYRIGHT (C) 2016-2019 MICHAEL A. COLMAN ==============  //
+// COPYRIGHT (C) 2016-2020 MICHAEL A. COLMAN ==============  //
 // THIS PROGRAM IS FREE SOFTWARE: YOU CAN REDISTRIBUTE IT =  //
 // AND/OR MODIFY IT UNDER THE TERMS OF THE GNU GENERAL ====  //
 // PUBLIC LICENSE AS PUBLISHED BY THE FREE SOFTWARE =======  //
@@ -86,6 +86,8 @@
 //	spatial_cell_settings()
 //	set_tau_ss()
 //	set_sub_cellular_local_scale()
+//  read_sub_cellular_het_maps()
+//  set_sub_cellular_local_het_scale()
 //	set_dyad_heterogeneity()
 //	write_random_dyad_het_vtk()
 //	
@@ -174,6 +176,26 @@ void Ca_array_deallocation(Ca_variables *Ca)
 	delete  [] Ca->bcyto;
 	delete  [] Ca->bss;
 	delete  [] Ca->bjsr;
+}
+
+void CRU_map_array_allocation(int NCRU, CRU_variables *cru)
+{
+    cru->TT_map         = new int    [NCRU];
+    cru->SERCA_map      = new double [NCRU];
+    cru->NCX_map        = new double [NCRU];
+    cru->RyR_het_map    = new double [NCRU];
+    cru->LTCC_map       = new double [NCRU];
+    cru->dyad_het_map  = new double [NCRU];
+}
+
+void CRU_map_array_deallocation(CRU_variables *cru)
+{
+    delete [] cru->TT_map;
+    delete [] cru->SERCA_map;
+    delete [] cru->NCX_map;
+    delete [] cru->RyR_het_map;
+    delete [] cru->LTCC_map;
+    delete [] cru->dyad_het_map;
 }
 
 // Arrays with multiple elements per dyad
@@ -355,6 +377,19 @@ void set_tau_ss(Cell_parameters *p)
 // End tau SS type assignment =========================================================//|
 
 // Sub-cellular local scale factors ===================================================\\|
+void initialise_sub_cellular_het_maps(int N, CRU_variables *cru)
+{
+    for (int n = 0; n < N; n++)
+    {
+        cru->TT_map[n]          = 1;
+        cru->SERCA_map[n]       = 1.0;
+        cru->NCX_map[n]         = 1.0;
+        cru->RyR_het_map[n]     = 1.0;
+        cru->LTCC_map[n]        = 1.0;
+        cru->dyad_het_map[n]    = 0.5; // this will contain rand, where 0.5 = normal
+    }
+}
+
 void set_sub_cellular_local_scale(Cell_parameters p, Dyad_variables *d, Membrane_fluxes *m, SR_fluxes *sr)
 {
     // Default local values to global values
@@ -366,6 +401,70 @@ void set_sub_cellular_local_scale(Cell_parameters p, Dyad_variables *d, Membrane
     m->GCab             = p.GCab;
     m->GCaP             = p.GCaP;
     d->vol_ds           = p.vds_CRU_mean;
+}
+
+void read_sub_cellular_het_maps(SC_variables sc, CRU_variables *cru, const char *PATH, const char *Outputs_dir)
+{
+    double Nmap;
+    if (strcmp(cru->SERCA_het, "On") == 0)
+    {
+        if (strcmp(cru->SERCA_map_file, "none") == 0)
+        {
+            printf("ERROR: SERCA heterogeneity is On but no map file has been specified\n");
+            exit(1);
+        }
+        else Nmap    =  read_map_file_double(sc, cru->SERCA_map, cru->SERCA_map_file, "Sub_cellular_het_geometries", PATH, Outputs_dir, "SERCA"); // lib/Spatial_coupling.cpp
+    }
+    if (strcmp(cru->NCX_het, "On") == 0)
+    {
+        if (strcmp(cru->NCX_map_file, "none") == 0)
+        {
+            printf("ERROR: NCX heterogeneity is On but no map file has been specified\n");
+            exit(1);
+        }
+        else Nmap    =  read_map_file_double(sc, cru->NCX_map, cru->NCX_map_file, "Sub_cellular_het_geometries", PATH, Outputs_dir, "NCX"); // lib/Spatial_coupling.cpp
+    }
+    if (strcmp(cru->RyR_het, "map") == 0)
+    {
+        if (strcmp(cru->RyR_het_map_file, "none") == 0)
+        {
+            printf("ERROR: RyR heterogeneity is On but no map file has been specified\n");
+            exit(1);
+        }
+        else Nmap    =  read_map_file_double(sc, cru->RyR_het_map, cru->RyR_het_map_file, "Sub_cellular_het_geometries", PATH, Outputs_dir, "RyR"); // lib/Spatial_coupling.cpp
+    }
+    if (strcmp(cru->LTCC_het, "map") == 0)
+    {
+        if (strcmp(cru->LTCC_map_file, "none") == 0)
+        {
+            printf("ERROR: LTCC heterogeneity is On but no map file has been specified\n");
+            exit(1);
+        }
+        else Nmap    =  read_map_file_double(sc, cru->LTCC_map, cru->LTCC_map_file, "Sub_cellular_het_geometries", PATH, Outputs_dir, "LTCC"); // lib/Spatial_coupling.cpp
+    }
+    /*if (strcmp(cru->Detub, "On") == 0)
+    {
+        if (strcmp(cru->TT_map_file, "none") == 0)
+        {
+            printf("ERROR: TT map is On but no map file has been specified\n");
+            exit(1);
+        }
+        else int temp = read_map_file(sc, cru->TT_map, cru->TT_map_file, "Sub_cellular_het_geometries" , PATH, Outputs_dir, "TT_map");   // lib/Spatial_coupling.cpp
+    }*/
+}
+
+void set_sub_cellular_local_het_scale(Cell_parameters p, int N, Dyad_variables *d, Membrane_fluxes *m, SR_fluxes *sr, CRU_variables cru)
+{
+    // scale local values (which already have global scaling applied by previous function) by heterogeneity maps
+    for (int n = 0; n < N; n++)
+    {
+        sr[n].Gup       *= cru.SERCA_map[n];
+        //sr[n].Gleak     *= cru.SERCA_map[n];
+        m[n].GNCX       *= cru.NCX_map[n];
+        m[n].GNCX       *= cru.TT_map[n];
+        m[n].GCab       *= cru.TT_map[n];
+        m[n].GCaP       *= cru.TT_map[n];
+    }
 }
 // End Sub-cellular local scale factors ===============================================//|
 
@@ -414,7 +513,7 @@ void set_dyad_heterogeneity(Cell_parameters p, Dyad_variables *d, double rand, i
 
     // Now set actual values according to dists, if random is on (want same random number in so that dyad_vol, NRyR and NLTCC all vary together if at all)
     // Vol ds
-    if (strcmp(cru.volds_het, "random") == 0)
+    if (strcmp(cru.volds_het, "On") == 0)
     {
         mean        = p.vds_CRU_mean;
         propvar     = 0.4;
@@ -445,7 +544,7 @@ void set_dyad_heterogeneity(Cell_parameters p, Dyad_variables *d, double rand, i
         d->NLTCC    = (int)N;
     }
 
-    if (strcmp(cru.volds_het, "random") == 0 || strcmp(cru.RyR_het, "random") == 0 || strcmp(cru.LTCC_het, "random") == 0)
+    if (strcmp(cru.volds_het, "On") == 0 || strcmp(cru.RyR_het, "random") == 0 || strcmp(cru.LTCC_het, "random") == 0)
         *map = rand;
 
     fprintf(dyad_het_out, "%f %d %f %d %d\n", rand, n, d->vol_ds, d->NRyR, d->NLTCC);

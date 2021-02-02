@@ -1791,6 +1791,18 @@ typedef struct {
 	// Global control, spatial cell model only
 	char const* tau_ss_type;        // Identifier for time constant of coupling of sub-space
 	bool		tau_ss_arg;			// True IF argument has been passed
+
+    // Concentrations
+    double      Nai;
+    bool        Nai_arg;
+    double      Nao;
+    bool        Nao_arg;
+    double      Cao;
+    bool        Cao_arg;
+    double      Ki;
+    bool        Ki_arg;
+    double      Ko;
+    bool        Ko_arg;
 	// End model and cell conditions ==============================//|
 
 	// Tissue model settings ======================================\\|

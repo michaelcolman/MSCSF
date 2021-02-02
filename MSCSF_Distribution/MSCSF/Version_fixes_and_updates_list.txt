@@ -1,4 +1,5 @@
 =====Version 1.1 Sub-cellular heterogeneity included, associated with Methods paper
+    03/02/2021 - Extracellular concentrations added as run-time controllable parameters
 	05/04/2020 - Functionality for sub-cellular heterogeneity and reading in maps added; documentation updated; "Sub_cellular_het_geometries" directory and single example map file added to "MSCSF_state_and_geometry_files"; example of using this added to Example_scripts/3D_cell; no 7 
     01/04/2020 - Arguments.c file updated to Windows format as default (works in all OS).
 

@@ -545,6 +545,8 @@ void output_settings(Simulation_parameters sim, char const * directory, bool DC_
 	{
 		printf("Direct control of modifier parameters has also been passed. See Log.dat for arguments and Outputs_X/Parameters_Y/Modifier_parameters.dat for full modifier values\n");
 	}
+    printf("\nInitial concentrations:\n");
+    printf("\tKo %.02f Ki %.02f Nao %.02f Nai %.02f Cao %.02f Cai %.02f\n", p.Ko, p.Ki, p.Nao, p.Nai, p.Cao, p.Cai);
 	printf("*************************************************************************************************************\n\n");
 
 	// File
@@ -573,6 +575,8 @@ void output_settings(Simulation_parameters sim, char const * directory, bool DC_
 	if (p.hAM == true) fprintf(so, "\thAM single cell model is being used; cell environment is %s ", p.environment);
 	if (strcmp(p.environment, "isolated") == 0) fprintf (so, "|| Ihyp = %0.2f pA/pF\n", p.AIhyp);
 	else fprintf(so, "\n");
+    fprintf(so, "\nInitial concentrations:\n");
+    fprintf(so, "\tKo %.02f Ki %.02f Nao %.02f Nai %.02f Cao %.02f Cai %.02f\n", p.Ko, p.Ki, p.Nao, p.Nai, p.Cao, p.Cai);
 	if (DC_current_mod_arg == true)
 	{
 		fprintf(so, "Direct control of modifier parameters has also been passed. See Log.dat for arguments and below for final modifier values (args + modulation)\n");

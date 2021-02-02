@@ -421,7 +421,12 @@ int main(int argc, char *argv[])
 		// Set model condition params from arguments where passed; only for those which are set in set_parameters_native() to overwrite with argument value
         if (Argin.Celltype_arg 	== true)	Params[n].Celltype 	= Argin.Celltype; 	
         if (Argin.ISO_model_arg == true)	Params[n].ISO_model	= Argin.ISO_model; 	
-        if (Argin.ACh_model_arg == true)    Params[n].ACh_model = Argin.ACh_model; 	
+        if (Argin.ACh_model_arg == true)    Params[n].ACh_model = Argin.ACh_model; 
+
+        // Set concentrations from arguments if specified
+        assign_concentrations_from_arguments(&Params[n], Argin);
+        if (Argin.Cai_IC_arg    == true)    Params[n].Cai          = Argin.Cai_IC;
+        if (Argin.CaSR_IC_arg   == true)    Params[n].CaSR         = Argin.CaSR_IC;    
 
         // Update Sim.dt if Params.dt has been explicitly set in "set_parameters" (thus Sim.dt != Params.dt), and dt has NOT been passed as a command-line argument.
         if (Argin.dt_arg    	== false && Params[n].dt != Sim.dt) 	Sim.dt = Params[n].dt;

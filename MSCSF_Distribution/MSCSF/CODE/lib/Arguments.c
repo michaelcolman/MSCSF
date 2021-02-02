@@ -122,6 +122,12 @@ void set_argument_defaults(Argument_parameters *A)
 	A->Vclamp						= "Off";
 	A->Write_state					= "Off";
 	A->Read_state					= "Off";
+
+    A->Nai_arg                      = false;
+    A->Nao_arg                      = false;
+    A->Cao_arg                      = false;
+    A->Ki_arg                       = false;
+    A->Ko_arg                       = false;
 	// End model and cell ===========//|   
 
 	// Tissue settings ==============\\|
@@ -648,6 +654,44 @@ void set_arguments(int Narg, char *argin[], Argument_parameters *A, char const *
 			}
 			counter++; isFound = true;
 		}
+
+        // Concentrations
+        if (strcmp(argin[counter], "Nai") == 0)
+        {
+            A->Nai              = atof(argin[counter+1]);
+            A->Nai_arg          = true;
+            fprintf(out, "Nai %s ", argin[counter+1]);
+            counter++; isFound = true;
+        }
+        if (strcmp(argin[counter], "Nao") == 0)
+        {
+            A->Nao              = atof(argin[counter+1]);
+            A->Nao_arg          = true;
+            fprintf(out, "Nao %s ", argin[counter+1]);
+            counter++; isFound = true;
+        }
+        if (strcmp(argin[counter], "Ki") == 0)
+        {
+            A->Ki              = atof(argin[counter+1]);
+            A->Ki_arg          = true;
+            fprintf(out, "Ki %s ", argin[counter+1]);
+            counter++; isFound = true;
+        }
+        if (strcmp(argin[counter], "Ko") == 0)
+        {
+            A->Ko              = atof(argin[counter+1]);
+            A->Ko_arg          = true;
+            fprintf(out, "Ko %s ", argin[counter+1]);
+            counter++; isFound = true;
+        }
+        if (strcmp(argin[counter], "Cao") == 0)
+        {
+            A->Cao              = atof(argin[counter+1]);
+            A->Cao_arg          = true;
+            fprintf(out, "Cao %s ", argin[counter+1]);
+            counter++; isFound = true;
+        }
+        // Cai is found elsehwere - in spatial model stuff
 		// End model and cell conditions ====================================//|
 
 		// Applied hyperpolarising current ==================================\\|
@@ -2103,6 +2147,7 @@ void set_arguments(int Narg, char *argin[], Argument_parameters *A, char const *
 			printf("\tenvironment [intact/isolated]\n\n");
 			printf("\tRemodelling_proportion [0-1]\tAgent_proportion [0-1]\n");
             printf("\tSpatial_gradient [string]\tSpatial_gradient_proportion [0-1]\n");
+            printf("\tConcentrations: Nai, Nao, Ki, Ko, Cai, Cao\n");
 			printf("[Direct control current modification]:\n");
 			printf("\t{INa/INaL/Ito/ICaL/IKur/IKr/IKs/IK1/INCX/ICaP/INab/ICab/IKb/INaK/IClCa/IKACh/IClb}_scale [x]\n\n");
 			printf("\t{Jup/Jleak/Jrel}_scale [x]\n\n");

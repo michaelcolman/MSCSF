@@ -89,6 +89,7 @@ void update_parameters_spatial_Ca_0D(Cell_parameters *p);
 void initialise_measurement_variables(Model_variables *var);
 
 // Current modification variables
+void assign_concentrations_from_arguments(Cell_parameters *p, Argument_parameters A);
 void set_modification_defaults_native(Cell_parameters *p);
 void assign_modification_from_arguments(Cell_parameters *p, Argument_parameters A);
 

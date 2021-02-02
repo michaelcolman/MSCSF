@@ -218,6 +218,11 @@ int main(int argc, char *argv[])
 	if (Argin.ACh_model_arg == true)    Params.ACh_model    = Argin.ACh_model; 
 	if (Argin.Ihyp_arg      == true)   	Params.AIhyp        = Argin.AIhyp;
 
+    // Set concentrations from arguments if specified
+    assign_concentrations_from_arguments(&Params, Argin);
+    if (Argin.Cai_IC_arg    == true)    Params.Cai          = Argin.Cai_IC;
+    if (Argin.CaSR_IC_arg   == true)    Params.CaSR         = Argin.CaSR_IC;
+
 	// Update Sim.dt if Params.dt has been explicitly set in "set_parameters" (thus Sim.dt != Params.dt), and dt has NOT been passed as a command-line argument.
 	if (Argin.dt_arg    	== false && Params.dt != Sim.dt) 	Sim.dt = Params.dt;
 	printf(">Model and version specific parameters set\n");

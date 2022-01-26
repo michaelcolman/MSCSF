@@ -1,0 +1,25 @@
+Only in CODE/: .DS_Store
+Only in /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/: ISO-LENGTHSCALE-5.0-SERCAEXP-1.0-CRUEXP-1-MAP-1-.dat
+Only in /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/: Log.dat
+Only in /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/: Make_Spatial_Data.sh
+Only in /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/: Makefile
+Only in /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/: Outputs_3Dcell
+diff CODE/Single_cell_0D_main.cc /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/Single_cell_0D_main.cc
+216a217
+> 	else if (strcmp(Params.Model, "rAM_OA") == 0);
+diff CODE/Single_cell_3D_main.cc /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/Single_cell_3D_main.cc
+224a225
+> 	else if (strcmp(Params.Model, "rAM_OA") == 0);			// rabbit atrial cell; Aslanidi et al 2009 Biophys J 2009; 96(3); 798-817
+320a322,325
+> 
+>     if (Argin.tau_SR_arg == true) Params.tau_SR_scale = Argin.tau_SR_scale; // else tau_SR_scale is 1
+>     set_tau_SR(&Params);
+>     printf(">nSR coupling time constants set\n");
+diff CODE/Single_cell_native_main.cc /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/Single_cell_native_main.cc
+198a199,202
+> 	else if (strcmp(Params.Model, "rAM_OA") == 0);			// rabbit atrial cell; Aslanidi et al 2009 Biophys J 2009; 96(3); 798-817
+> 	else if (strcmp(Params.Model, "rAM_Maxx") == 0);		// rabbit atrial cell; Maxx Holmes Experimental Version
+> 	else if (strcmp(Params.Model, "rVM_SB") == 0);			// rabbit ventricular cell; Shannon-Bers 2004
+> 	else if (strcmp(Params.Model, "rAM_GB") == 0);			// Edited version of hAM_GB for rabbit atria
+Common subdirectories: CODE/lib and /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/lib
+Only in /Users/fbsmac/Source_code/MSCSF/SERCA_CODE_VERSION/: model_single_3D

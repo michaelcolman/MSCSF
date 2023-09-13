@@ -1,0 +1,291 @@
+Basic instructions to modify the code in multiple ways.
+Please see full documentation for more details of file and struct contents.
+This source code is proivided with no conditions or limitations as to what you can do to modify it.
+If you want any new components you have added to be included in the distribution version of the code, 
+please email me your updates (with a list of changes) and I will review and decide on whether to include it
+in the package.
+
+See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier identifiers and filenames.
+
+__________________________________________________________________________________________________
+
+Forward:
+    The code is designed to facilitate easy incorporation of new modulation models (e.g. celltype, remodelling, mutation...), 
+    tissue models (idealsed or using reconstructed anatomical geometries), spontaneous release function models, and whole new cell models. 
+    Instructions of how to do these are given here. Given that it is in C/C++, any modification is possible, but more complex modifications 
+    will require your own knowledge of the code. Hopefully the descriptions of the contents and sequences in the full documentation will faciliate this.
+    Below instructions should cover the majority of additional required functionality.
+
+__________________________________________________________________________________________________
+
+Variables:
+    All of the variables are contained within structs, defined in lib/Structs.h:
+
+    • Argument_parameters:
+        • variables for all user controlled options, assigned from command-line arguments
+          and from which parameters in other structs are assigned.
+    
+    • Simulation_parameters:
+        • BCL, Total_time, NBeats, S2, NS2, dt
+        • Vclamp On/Off
+        • Read/write state On/Off
+        • Directory simulation references
+    
+    • Cell_parameters:
+        • model conditions (Celltype, ISO, Remodelling etc)
+        • constants (R, T, F etc)
+        • Cell structure parameters (Cm, size and volumes etc)
+        • stimulus parameters (magnitude and duration)
+        • current and flux parameters (gNa, J_SERCA_max, affinity constants etc)
+        • modifier parameters (current/flux scaling, voltage shifts, time-constant scales) ** these are used for new modulations
+
+    • State_variables:
+        • Vm
+        • ionic concentrations
+        • ion current gating variables
+        • calicum handling gating and time-dependent buffering variables
+    
+    • Model_variables:
+        • stimulus variables (Istim and sitm flags)
+        • reversal potentials
+        • currents, fluxes and calculated variables (INa, Jup, transition rates etc)       
+        • excitation measurement properties (excitation state, dvdt, APD etc)
+    
+    • Tissue_parameters:
+        • Tissue model conditions (Tissue model, Tissue order, heterogeneity etc)
+        • Stimulus location parameters
+        • Tissue map flags
+        • Tissue dimensions
+        • Geometry, stimulus and modulation maps and map filenames
+        • Heterogeneity and anistropy settings
+        • Conduction velocity measurement variables
+
+    • Spontaneous_release_functions
+        • SRF mode and conditions
+        • Input variables for the SRF
+        • Calculated SRF variables
+
+    Variables related to the 3D calcium handling system are in further structs. 
+    However, these are not necessary for any of the modifications described here.
+__________________________________________________________________________________________________
+
+Naming convention:
+    Throughout the code, the following convention is used to name variables 
+    (NOT implementing the standard gating varibale names):
+    Current_activator_activation/inactivation_additional_ref
+
+    i.e. 
+        the voltage activation gate for the sodium current is:
+            INa_va (this is the state variable - in State_variables struct)
+
+        calcium inactivation gate for ICaL:
+            ICaL_ci (this is the state variable)
+
+        steady-state for voltage activation gate of Ito:
+            Ito_va_ss (this is a computed variable - in Model_variables struct)
+
+        time constant for inactivation gate of IKur:
+            IKur_vi_tau (this is a computed variable)
+
+I personally found this much more useful and convenient than using "random" letters for each
+gate and current, which may not be obvious what they are and may vary from model to model.
+
+__________________________________________________________________________________________________
+
+Adding variables:
+
+You may need to add new variables to the code as part of any modification you are making;
+variables for most model components already exist, so first please to check lib/Structs.h 
+for matcing or suitably similar variable.
+If your variable does not already exist, then you will need to add it. This procedure depends
+on the type of variable you are adding:
+
+• Local variables: if the variable is computed for the calculation of a current/flux/concentration,
+    and is not required for use outside of its used function, create it locally. Otherwise:
+
+• Parameters: Add the parameter to the appropriate location of "Cell_parameters" struct. 
+    It is now ready to be used - simply give it a value in the relevant set_parameters_native_X() 
+    function in lib/Model_X.cpp, or in set_default_parameters() in lib/Initialisation.c, if it applies 
+    to multiple models. 
+
+• Computed variables (e.g. steady state, transition rates, currents, fluxes): Simply add to the
+    appropriate location of the "Model_variables" struct. It is now ready to be accessed from any function
+    which reads in Model_variables.
+
+• State variables: 
+    • Add to struct "State_variables". 
+    • Set the intial condition in initial_conditions_native_X().
+    • Finally, add it to read/write state functionality. In lib/Read_write_state.c, navigate to the first two
+        funtions "{Write/Read}_state_variables_native()" and follow the instructions at the bottom of each function
+        to add a new variable. 
+
+• Modifier variables (current/flux scaling; voltage shifts etc): 
+    • Add to the appropriate location of "Cell_parameters" struct (search "MODIFIERS"). 
+    • Set the default value in set_modification_defaults_native() in lib/Model.c (1 for scale; 0 for shift).
+    • Note: shift applies by adding to V1/2 and thus subtracting from V.
+
+• Tissue parameters. Add to "Tissue_parameters" struct and default in set_tissue_model_conditions() in
+    lib/Tissue.cpp. Set either here or in relevant set tissue settings functions (set_tissue_settings_idealised() or
+    set_tissue_settings_anatomical() ). 
+
+• Variable/parameter to be controlled from command line arguments:
+    • First, add the variable itself as above (e.g. a current scale modifier); the following describes how to
+        set and modify this variable from command line/settings_file arguments; the variable itself must already
+        be included and do what you want it to!
+    • In the "Argument_parameters" struct (last one in the Structs.h file), add:
+        • A copy of the variable you want to modify (e.g. a new current scale)
+        • A boolean flag variable with the same name with "_arg" appended.
+    • Default the ".._arg" boolean to false in lib/Arguments.c -> set_argument_defaults().
+    • Add a condition to the IF statements in function set_arguments() in lib/Arguments.c, following the
+        examples already present. Ensure to set the flag and increment arg_counter within this conditional.
+    • Add your new argument and its options to screen outputs at the bottom of that function.
+    • In lib/Initialisation.c, navigate to assign_modification_from_arguments() and add a line which sets 
+        the model variable to the argument variable if the _arg flag has been set to true (follow examples).
+        This will ensure the argument value will be applied, but only if argument is passed.
+    • If it is a tissue parameter, then you may also need to navigate to overwrite_tissue_properties_from_args()
+        in lib/Tissue.cpp and add a clause there to overwrite/set the tissue parameter from your argument parameter.
+    • Finally, you can add it to screen settings outputs in output_settings() in lib/Outputs.cpp.
+
+__________________________________________________________________________________________________
+
+You probably want to add a citation to any component you add.
+In lib/Outputs.cpp go to output_disclaimer_citations(), simply add an entry here which prints the citation to screen
+if your new model/component is used.
+
+__________________________________________________________________________________________________
+
+1) Adding a new celltype or modulation model:
+    
+    Celltype and modulation models can apply to all, some or just specific implemented cell models.
+    
+    Modulation is implemented using the modifier parameters of the Cell_parameters struct.
+    In lib/Structs.h, search "MODIFIERS" for a full list.
+        • Scale factors: Gx where x is current or flux identifier; defauled to 1.0.
+        • Time constant scaling: Ix_vy_tau_scale where x is current and y is gating variable; defaulted to 1.0.
+        • Voltage shifts: defaulted to 0.0. 
+            • Ix_vy_ss_shift    - shifts the V1/2 of the steady state of gate y (a, i).
+            • Ix_vu_tau_shift   - shifts voltage dependence of time constant of gate y
+        • Gradient scaling – denoted Ix_vy_ss_kscale – scales the gradient parameter of regular sigmoidal functions 
+            for the steady state of current x and gate y. Defaulted to 1.0. 
+
+    • Adding a model-specific celltype or modulation model:
+        • Open the relevant model's file: lib/Model_X.cpp where X is the model identifier (list of all available models in the documentation and AVAILABLE_MODEL_LIST.txt)
+        • Navigate to the appropriate function:
+            • set_celltype_native_X()
+            • update_celltype_integrated_X()
+            • set_modulation_ISO_native_X()
+            • set_modulation_Agent_native_X()
+            • set_modulation_Remodelling_native_X()
+            • set_modulation_Mutation_native_X()
+            • set_modulation_ACh_X()
+            • If the function is not present in your selected cell model, copy the template function from lib/Model_TEMPLATE.cpp
+                and add the function call to set_het_mod_X() and the function to lib/Model.h.
+        • Follow the in-code instructions for incorporating your model, using the modifier parameters described above.
+
+    • Adding a global or common celltype or modulation model:
+        • In lib/Model.c navigate to set_heterogeneity_and_modulation_native()
+        • If your model fits within an entry already in Global or common, simply navigate to the
+            relevant function and add your modifier following the examples.
+        • If it is a new global or common type (e.g. human ventricular celltypes, ISO common to
+            a set of models etc - which are currently not in the model) 
+            Simply copy the template set_MODIFIER_X_Y() (below the present function) and
+            implement according to instructions in both functions. Rename the function as 
+            appropriate and add it to lib/Model.h
+
+    • Adding a spatial gradient model:
+        • Adding a spatial gradient model, such as apico-basal ventricular heterogeneity gradients 
+            is unique in that it is only implemented globally (as it will depend on geoemtry and species, but
+            not specific cell models).
+        • Simply navigate to set_spatial_gradient() in lib/Model.c and add your model there, giving it an 
+            appropriate specific identifier.
+        • In tissue models, implementation will also require a spatial gradient map; in single cells, 
+            the gradient parameter can be controlled through the argument "Spatial_gradient_proportion [0-1]"
+
+    • NOTE on ICaL and JREL modifiers:
+        • In the integrated cell models, both fluxes can be scaled by either scaling the expression (NLTCC, NRyR) or
+            the open state transition rate (GLTCC_kva1_va2, GRyR_kCO).
+        • In native models, only the expression can be scaled (GCaL, Grel).
+        • To keep consistent and allow the same modification model to apply to both native and integrated, the following occurs:
+            • In the native model, GCaL is scaled directly and also by GLTCC_kva1_va2 and similar for RyR;
+            • In integrated models, the parameters GCaL and Grel scale NLTCC and NRyR;
+            • Thus, set either GCaL or GLTCC_kva1_va2; Grel or GRyR_kCO, depending on what you want:
+                • In native models, they both do the same thing - so functionality can be distinguised in integrated models and simultaneously
+                    be consistent in native models.
+                • To chose which to do, think about whether your change in current/flux is due to channel expression (e.g. remodelling, celltype)
+                    or dynamic/functional change in channel activity (e.g. ISO, ACh). If the former, use GCaL/Grel; if the latter, use the
+                    transition rate scaling. Use voltage clamp to set the correct scaling to match overall chnage in flux (not necessarily linear).
+__________________________________________________________________________________________________
+   
+2) Adding a new tissue model:
+    
+    New idealised or anatomically detailed tissue models can be easily added in lib/Tissue.cpp
+    Simply navigate to 
+        • set_tissue_settings_idealised() for an idealised model.
+        • set_tissue_settings_anatomical() for an anatomically detailed model.
+    Create a new ELSE IF condition at the bottom of the list, following the examples given in "functional_model_test", 
+    which contains examples of all currently implemented functionality and instructions on file format etc.
+    If using anatomical, you will need to create all geo, stim and map files and put them in your PATH location
+    in the directory "Tissue_geometries", following file format instructions in the code.
+
+__________________________________________________________________________________________________
+
+3) Adding a new spontaneous release function model:
+
+    Spontnaeous release function parameters are controlled in lib/Spontaneous_release_functions.cpp
+    You can add a new model for Direct_control (static probability distribution settings) or Dynamic, either
+    based on analysis of the 3D cell or general and controllabe.
+    
+    Sinmply navigate to the appropraite function (below) and add an ELSE IF condition following the examples already present.
+    
+        • set_SRF_Direct_Control_parameters()       - single distributions from which to sample parameters
+        • set_SRF_dynamic_parameters_3D_cell()      - CaSR dependent distributions, fit to 3D cell model behaviour
+        • set_SRF_dynamic_parameters_controllable() - CaSR dependent distributions, general and controllable
+
+__________________________________________________________________________________________________
+
+4) Adding a new current to an existing cell model.
+
+    First, determine if variables for the current already exist (even if not implemented in the 
+    appropraite cell model) -> can check lib/Model_TEMPLATE.cpp as this has template functions for
+    every current implemented in the framework. You can also copy these functions and use as a guide.
+    
+    If the current does not already exist, or you need to add new variables, follow some/all of the procedure below:
+
+        • Add any and all relevant:
+            • State variables (time-dependent) 
+            • Computed variables (time-indepdent; transition rates, currents etc)
+            • Parameters (conductance, affinities etc)
+            • Modulation variables (Current/flux scaling; voltage shifts etc)
+        Following the guidelines above in this document.
+
+        • Then, simply add new functions to your cell model (lib/Model_X.cpp; lib/Model.h) - use template and other
+            functions as a guide.
+
+        • Call the new current functions within compute_model_X_native()/compute_model_X_integrated() + update gating variables
+            and don't forget to add it to Itot in compute_Itot_X_native()/compute_Itot_X_integrated()
+
+        • You may also want to add it to the data outputs: lib/Outputs.cpp output_currents() and/or
+            output_CRU().
+__________________________________________________________________________________________________
+
+5) Adding a whole new cell model:
+    
+    lib/Model_TEMPLATE.cpp has been given to facilitate easy incorporation of new cell models, maintaining all of the
+        functionality of the framework.
+
+    • First, determine an identifier for your model. 
+        This can have any form you like, with the convention: speciesCELL_MODEL. 
+        For example, Grandi-Bers lab human atrial myocyte cell model is "hAM_GB"
+        This will be used for function and file naming as well as the string used 
+        in IF statements to select your model.
+
+    • Second, copy the template file to a new file called lib/Model_X.cpp where "X" is 
+        your model identifier.
+
+    • Follow the embedded instructions in the template (now in your new file).
+
+    • For integrating the AP model with the spatial/0D Ca2+ handling model, you should also add the ICaL function calls to 
+        lib/CRU.cpp function set_LTCC_rates(). 
+        Note: combining models is rarely trivial!
+
+     

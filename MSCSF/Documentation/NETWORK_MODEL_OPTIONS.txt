@@ -1,0 +1,61 @@
+Use model_tissue_network or model_tissue_0D_network as your main to run the network model
+
+The new tissue models implemented in this network model can be accessed through:
+
+    Tissue_order geo Tissue_model Vector_field_and_fibrosis_2D_sims
+    Tissue_order geo Tissue_model Vector_field_and_fibrosis_3D
+    Tissue_order geo Tissue_model Rat_vent_three_eigenvectors_control_base
+
+    Apply_symmetry_factors [On/Off]
+
+
+Up to four maps may be applied to modulate coupling parameters. Whereas they have different "purposes", they can be used for any sequential maps
+
+The first two are the same as when using FDM: 
+    D_unifomity map Dscale_base_map_file [filename]
+        This will scale the nodal ga and gt according to the map file (aimed at being a baseline heterogeneity in control)
+
+    Dscale [X] Dscale_mod_map [On/Off] Dscale_mod_map_file [filename]
+        This will scale the nodal ga and gt by the factor passed into "Dscale" in the location specified by the map (if map is 0 or 1) or by the amount specified in the map
+        I.e. if Dscale is 0.5 then this scaling will be applied everywhere the map is non-zero, lienarly scaled by that amount up to 1 for full effect. 
+
+Then there are two new ones which are for junction maps (rather than nodal maps):
+    Junction_baseline_map [On/Off] Junction_baseline_map_file [filename]
+    Junction_modulation_map [On/Off] Junction_modulation_map_file [filename]
+        Both of these files must be of size Njunc, not Nnode, and can be created with the tool provieded (instructions below)
+        These scale (or remove by scaling to 0) the junctional condutance on a junction-by-junction basis
+
+All four maps can be applied sequentiallly if desired:
+    D_unifomity will set ga and gt values for each node in tissue
+    D_scale_mod_map will then scale these values according to the map
+    The junction maps will then modify the junctions directly, where the junctions are formed by the parameters of the nodes
+
+EG: ./model_tissue_network Tissue_order geo Tissue_model Vector_field_and_fibrosis_2D_sims Junction_modulation_map On Junction_modulation_map_file Fibrosis_geometry_200_200_1_junction_map_0.2_0.8.dat Apply_symmetry_factors On
+
+
+Using the "create_connection_map" tool:
+
+    To compile type "Make create_connection_map"
+
+    NOTE: for proper distributions, you will have to hard-code these yourself, but it is still recommended to use this tool and code your distribution into that
+
+    This tool will load a geometry (and otional map file) contianed in the MSCSF and then create three different types of junction maps (based on random sampling) for that geometry
+    The three maps is will create are: [tissue_model]_Junction_discrete_map_x_y.dat     || removed proportion of axial/trans; x, y = proportion axial, transverse, connections REMOVED
+                                                     _Junction_cont_map_w_x_y_z.dat     || from defined distribution; w, x, y, z are dist parameters (which depend on the dist you code) - axial1, axial2, trans1, trans2
+                                                     _Junction_rand_map_x_y.dat         || from simple normal like random disttribution; x is dist width (~ 3SD), y is mean
+
+    Arguments:
+        Essential:
+            Tissue_order geo
+            Tissue_model [model]
+
+        Optional:
+            axial_perc [0-1]            Proportion of axial connections to remove (1 being 100%)
+            trans_perc [0-1]            Proportion of transverse connections to remove (1 being 100%)
+            Apply_map_file  [filename]  Whether to perform junction modification on a specified region only (specified by a previously made map)
+            distribution_width [x]      Sets the width (+= 3SD) of the distirbution from which to randomly sample scale factors
+            distribution_mean  [x]      Sets the mean of the distirbution from which to randomly sample scale factors
+            threshold_upper_axial       controls parameter of axial connection distrubution (specific parameter depends on function used to describe distriution)
+            threshold_lower_axial       " 
+            threshold_upper_trans       "
+            threshold_lower_trans       "

@@ -174,6 +174,53 @@ void output_currents(std::ostream& out, double sim_time, Model_variables var, St
 		<<std::endl;
 }
 
+// Output currents and gates to file
+void output_currents_csv(std::ostream& out, double sim_time, Model_variables var, State_variables s, double Vm)
+{
+    //1-3
+    out<<sim_time<<", "<<Vm<<", "<<var.Istim  \
+
+        // 4-7
+        <<", "<<var.INa<<", "<<s.INa_va<<", "<<s.INa_vi_1<<", "<<s.INa_vi_2 \
+
+        // 8-11
+        <<", "<<var.Ito<<", "<<s.Ito_va<<", "<<s.Ito_vi<<", "<<s.Ito_vi_s   \
+
+        // 12-15
+        <<", "<<var.ICaL<<", "<<s.ICaL_va<<", "<<s.ICaL_vi<<", "<<s.ICaL_ci   \
+
+        // 16-18
+        <<", "<<var.IKur<<", "<<s.IKur_va<<", "<<s.IKur_vi \
+
+        // 19-21
+        <<", "<<var.IKr<<", "<<s.IKr_va<<", "<<var.IKr_vi_ti   \
+
+        // 22-23
+        <<", "<<var.IKs<<", "<<s.IKs_va   \
+
+        // 24-25
+        <<", "<<var.IK1<<", "<<var.IK1_va_ti  \
+
+        // 26-30
+        <<", "<<var.INCX<<", "<<var.ICaP<<", "<<var.INab<<", "<<var.ICab<<", "<<var.IKb  \
+
+        // 31-33
+        <<", "<<var.INaK<<", "<<var.IClCa<<", "<<var.IClb     \
+
+        // 34-39
+        <<", "<<s.Cai<<", "<<s.Cai_sl<<", "<<s.Cai_j<<", "<<s.CajSR<<", "<<s.CanSR<<", "<<s.Cao       \
+
+        // 40-42
+        <<", "<<s.RyRo<<", "<<s.RyRr<<", "<<s.RyRi   \
+
+        // 43-48
+        <<", "<<s.Nai<<", "<<s.Nai_sl<<", "<<s.Nai_j<<", "<<s.Ki<<", "<<s.Nao<<", "<<s.Ko     \
+
+        //<<", "<<var.J_SERCA                                       \
+
+        <<std::endl;
+}
+
 // Excitation properties to file
 void output_excitation_properties(std::ostream& out, double sim_time, Model_variables var, double Vm)
 {
@@ -200,6 +247,32 @@ void output_excitation_properties(std::ostream& out, double sim_time, Model_vari
 
 		<<std::endl;
 }
+
+void output_excitation_properties_csv(std::ostream& out, double sim_time, Model_variables var, double Vm)
+{
+	//1-3
+	out<<sim_time<<", "<<Vm<<", "<<var.ex_switch      \
+
+		// 4-5
+		<<", "<<var.dvdt<<", "<<var.dvdt_max              \
+
+		// 6-8
+		<<", "<<var.Vmin<<", "<<var.Vmax<<", "<<var.Vamp   \
+
+		// 9-10
+		<<", "<<var.APD_t_switch<<", "<<var.APD_t         \
+
+		// 11-14 || 2 = APD_30, 4 = APD_50, 6 = APD_70, 8 = APD_90
+		<<", "<<var.APD_p[2]<<", "<<var.APD_p[4]<<", "<<var.APD_p[6]<<", "<<var.APD_p[8]         \
+
+		// 15-18
+		<<", "<<1e3*var.CaT_min<<", "<<1e3*var.CaT_max<<", "<<var.CaSR_min<<", "<<var.CaSR_max         \
+
+        // 19
+        //<<"  "<<var.J_SERCA_integral<<", "<<var.J_rel_integral            \
+
+		<<std::endl;
+}
 // End Common - screen file outputs =============================================================//|
 
 // Integrated Ca handling models only ===========================================================\\|
@@ -222,6 +295,29 @@ void output_CRU(std::ostream& out, double sim_time, Ca_variables Ca, CRU_variabl
 
 		// 20-25
 		<<" "<<cru.J_NCX_bulk<<" "<<cru.J_NCX_ss<<" "<<cru.J_CaP_bulk<<" "<<cru.J_CaP_ss<<" "<<cru.J_Cab_bulk<<" "<<cru.J_Cab_ss        \
+
+		<<std::endl;
+}
+
+void output_CRU_csv(std::ostream& out, double sim_time, Ca_variables Ca, CRU_variables cru, double Vm)
+{
+	//1-2
+	out<<sim_time<<", "<<Vm                 \
+
+		// 3-7
+		<<", "<<Ca.DS<<", "<<Ca.SS<<", "<<Ca.CYTO<<", "<<Ca.JSR<<", "<<Ca.NSR        \
+
+		// 8-15 
+		<<", "<<cru.J_REL<<", "<<cru.PRyR_OA<<", "<<cru.PRyR_OI<<", "<<cru.PRyR_CA<<", "<<cru.PRyR_CI<<", "<<cru.Monomer<<", "<<cru.Nactive<<", "<<cru.Pactive  \
+
+		// 16-17
+		<<", "<<cru.J_CAL<<", "<<cru.PLTCC_O      \
+
+		// 18-19
+		<<", "<<cru.J_SERCA<<", "<<cru.J_LEAK     \
+
+		// 20-25
+		<<", "<<cru.J_NCX_bulk<<", "<<cru.J_NCX_ss<<", "<<cru.J_CaP_bulk<<", "<<cru.J_CaP_ss<<", "<<cru.J_Cab_bulk<<", "<<cru.J_Cab_ss        \
 
 		<<std::endl;
 }
@@ -833,7 +929,9 @@ void output_disclaimer_citations(Cell_parameters p, Simulation_parameters sim)
 {
 	// Whole framework
 	printf("DISCLAIMER: BY USING THIS SOFTWARE YOU AGREE TO CITE ALL RELEVANT WORKS.\nPLEASE READ DISCLAIMER AT TOP OF MAIN CODE AND IN DOCUMENTATION FOR FULL DESCRIPTION OF LISCENCES ETC\n");
-	printf("\tAny use of this software must cite in the first instance: \n\tColman MA. “Arrhythmia Mechanisms and Spontaneous Calcium Release: Bi-directional coupling between re-entry and focal excitation” PLOS Comp Biol 2019.\n\n");
+	printf("\tAny use of this software must cite in the first instance: \n\tColman MA. “Arrhythmia Mechanisms and Spontaneous Calcium Release: Bi-directional coupling between re-entry and focal excitation” PLOS Comp Biol 2019.\n");
+    printf("\tThis specific implementation must also cite the Zenodo resource:\n\tColman, MA. (2023+). Multi-scale Cardiac Simulation Framework (Version 1.4-5). Michael Colman. 10.5281/zenodo.10204624 (all versions doi)\n\n");
+
 
 	// Baseline cell model ==============================\\|
 	printf("Baseline cell model:\n");
@@ -925,10 +1023,33 @@ void output_disclaimer_citations_tissue(Cell_parameters p, Tissue_parameters t)
 
 	if (strcmp(t.Tissue_model, "Human_vent_wedge") == 0)        printf("\tHuman ventricular wedge geometry from: Benson et al. 2007 Chaos 17(1):015105\n");
 	if (strcmp(t.Tissue_model, "Canine_vent") == 0)             printf("\tCanine bi-ventricle geometry from: Benson et al. 2008 Progress in Biophysics and Molecular Biology, Cardiovascular Physiome, 96(1): 187-208\n");
-	if (strcmp(t.Tissue_model, "Canine_atria_VA_control") == 0) printf("\tCanine atrial geometry from: Varela et al. 2016 PLOS Comp. Biol. 12, e1005245\n");
-	if (strcmp(t.Tissue_model, "Canine_atria_VA_remod") == 0)   printf("\tCanine atrial geometry from: Varela et al. 2016 PLOS Comp. Biol. 12, e1005245\n");
 	if (strcmp(t.Tissue_model, "Human_atria_Colman_Krueger") == 0) printf("\tHuman atrial geometry and segmentation from: Colman et al. 2013 J. Physiol. 591, 4249–4272\n\t\tand: Krueger MW et al. IEEE Trans Med Imaging. 2013 Jan;32(1):73–84\n\t\tincorporating the SAN reconstruction from Chandler et al. Anat Rec 2011 Jun;294(6):970-9\n");
-    if (strcmp(t.Tissue_model, "Rat_vent_three_eigenvectors_control_base") == 0) printf("\tWhittaker DG et al Investigation of the Role of Myocyte Orientations in Cardiac Arrhythmia Using Image-Based Models Biophysical Journal 2019, 117 (12), 2396-2408\n");
+    if (strcmp(t.Tissue_model, "Rat_vent_three_eigenvectors_control_base") == 0) printf("\tWhittaker DG et al Biophysical Journal 2019, 117 (12), 2396-2408\n");
+
+	if (strcmp(t.Tissue_model, "Canine_atria_VA_control") == 0 || strcmp(t.Tissue_model, "Canine_atria_VA_remod") == 0)
+    {
+            printf("\tCanine atrial geometry from: Varela et al. 2016 PLOS Comp. Biol. 12, e1005245\n");
+            printf("\tImplementation in this code must also cite: Colman et al. 2024 J Physiol (In press. doi: 10.1113/JP285740)\n");
+    }
+    if (strcmp(t.Tissue_model, "Vector_field_and_fibrosis_2D_sims") == 0 || strcmp(t.Tissue_model, "Vector_field_and_fibrosis_3D_sims") == 0)
+        printf("Geometries and fibrosis maps created for and used in Colman et al. 2024 J Physiol (In press. doi: 10.1113/JP285740)\n");
+
+    if (strcmp(t.Tissue_model, "Human_atria_AKL_heart_1") == 0 || (strcmp(t.Tissue_model, "Human_atria_AKL_heart_2") == 0) || (strcmp(t.Tissue_model, "Human_atria_AKL_heart_3") == 0)
+            || strcmp(t.Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0 || strcmp(t.Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0
+            || strcmp(t.Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0  || strcmp(t.Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0 || strcmp(t.Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0 )
+    {
+        printf("\tHuman atrial geometry from: Sharma R et al. 2023.  Regular and CMRxMotion Challenge Papers: 13th International Workshop, STACOM 2022, Held in Conjunction with MICCAI 2022, Singapore, September 18, 2022, Revised Selected Papers, pp. 317–329. Springer-Verlag, Berlin, Heidelberg. Available at: https://doi.org/10.1007/978-3-031-23443-9_29\n");
+        printf("\tImplementation in this code must also cite: Colman et al. 2023 Interface Focus 13(6):20230041. doi: 10.1098/rsfs.2023.0041\n");
+    }
+
+    if (strcmp(t.Tissue_model, "2D_human_atria_fibrosis_300x300_OY") == 0 || strcmp(t.Tissue_model, "2D_human_atria_fibrosis_300x300_field_control") == 0 || strcmp(t.Tissue_model, "2D_human_atria_fibrosis_300x300_field_remodelled") == 0) 
+        printf("Geometries and fibrosis maps created for and used in Colman et al. 2023 Interface Focus 13(6):20230041. doi: 10.1098/rsfs.2023.0041\n");
+
+}
+
+void output_disclaimer_citations_tissue_network(Cell_parameters p, Tissue_parameters t)
+{
+    printf("\nImplementation of the network model of intercellular coupling must cite: Colman and Benson 2023. Scientific Reports 13, 15119. https://doi.org/10.1038/s41598-023-39244-w\n");
 }
 
 void output_disclaimer_citations_spatial_cell(Cell_parameters p, Simulation_parameters sim)
@@ -947,7 +1068,8 @@ void output_disclaimer_citations_spatial_cell(Cell_parameters p, Simulation_para
     printf("=========================\n");
 
     printf("\nIf you are using sub-cellular Heterogeneity maps ({RyR/LTCC}_het map; {SERCA/NCX}_het; map_file arguments), you must cite:\n");
-    printf("\tColman, MA et al. Methods (Elsevier) 2020 – Currently corrected proof, please check for updates on journal volume etc. https://doi.org/10.1016/j.ymeth.2020.02.011\n");
+    printf("\tColman MA et al. 2021 Methods, Methods on simulation in biomedicine 185, 49–59. https://doi.org/10.1016/j.ymeth.2020.02.011\n");
+    printf("\tHolmes M et al. 2022 Philos. Trans. R. Soc. B Biol. Sci. 377, 20210317. https://doi.org/10.1098/rstb.2021.0317\n");
     printf("=========================\n");
 
 }

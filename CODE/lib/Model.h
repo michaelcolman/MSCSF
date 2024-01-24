@@ -765,6 +765,75 @@ void compute_IClb_Varela_dAM(Cell_parameters p, Model_variables *var, State_vari
 void comp_homeostasis_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
 // End Varela-Aslanidi dog atrial myocyte (dAM_VA) ==========================//|
 
+// Modified CRN (mCRN) ======================================================\\|
+void set_parameters_native_mCRN(Cell_parameters *p);
+void update_parameters_integrated_mCRN(Cell_parameters *p);
+void initial_conditions_native_mCRN(State_variables *s, Cell_parameters p);
+
+void set_het_mod_mCRN(Cell_parameters *p);
+void update_het_and_mod_mCRN_integrated(Cell_parameters *p);
+
+void set_celltype_native_mCRN(Cell_parameters *p);
+void update_celltype_integrated_mCRN(Cell_parameters *p);
+void set_modulation_ISO_native_mCRN(Cell_parameters *p);
+void set_modulation_Agent_native_mCRN(Cell_parameters *p);
+void set_modulation_Remodelling_native_mCRN(Cell_parameters *p);
+void set_modulation_Mutation_native_mCRN(Cell_parameters *p);
+void set_modulation_ACh_mCRN(Cell_parameters *p);
+
+void compute_model_mCRN_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_model_mCRN_integrated(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void set_gate_rates_mCRN_native(Cell_parameters p, Model_variables *var, double Vm, double Cai);
+void update_gating_variables_mCRN_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_Itot_mCRN_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_Itot_mCRN_integrated(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_and_output_current_functions_mCRN(Cell_parameters p, Model_variables *var, char const *directory);
+
+// Ito
+void set_Ito_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm);
+void update_gates_Ito_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_Ito_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// ICaL
+void set_ICaL_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm, double Cai);
+void set_ICaL_mCRN_va_rates(Cell_parameters p, double *va_ss, double *va_tau, double Vm_ss, double Vm_tau, double kscale);
+void set_ICaL_mCRN_vi_rates(Cell_parameters p, double *vi_ss, double *vi_tau, double Vm_ss, double Vm_tau, double kscale);
+void update_gates_ICaL_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_ICaL_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// IKur
+void set_IKur_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm);
+void update_gates_IKur_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_IKur_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// IKr
+void set_IKr_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm);
+void update_gates_IKr_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_IKr_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// IKs
+void set_IKs_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm);
+void update_gates_IKs_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_IKs_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// IKACh
+void set_IKACh_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm);
+void update_gates_IKACh_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+void compute_IKACh_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// IK1
+void set_IK1_mCRN_variables(Cell_parameters p, Model_variables *var, double Vm);
+void compute_IK1_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+
+// Background and Ca2+ handling
+void compute_INCX_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_INaK_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_ICaP_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_INab_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_ICab_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void compute_IClb_Varela_dAM(Cell_parameters p, Model_variables *var, State_variables *s, double Vm);
+void comp_homeostasis_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt);
+// End Modified CRN (mCRN) ==================================================//|
 
 // TEMPLATE FOR NEW MODEL ===================================================\\|
 // Copy all of these + add new ones for a new model, renaming to appropriate

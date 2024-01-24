@@ -81,8 +81,12 @@ void output_properties_to_screen(const char * log_reference, Model_variables var
 void output_currents(std::ostream& out, double sim_time, Model_variables var, State_variables s, double Vm);
 void output_excitation_properties(std::ostream& out, double sim_time, Model_variables var, double Vm);
 
+void output_currents_csv(std::ostream& out, double sim_time, Model_variables var, State_variables s, double Vm);
+void output_excitation_properties_csv(std::ostream& out, double sim_time, Model_variables var, double Vm);
+
 // Integrated Ca handling models only
 void output_CRU(std::ostream& out, double sim_time, Ca_variables Ca, CRU_variables cru, double Vm);
+void output_CRU_csv(std::ostream& out, double sim_time, Ca_variables Ca, CRU_variables cru, double Vm);
 
 // Spatial outputs (3D cell and tissue models)
 void linescan_out_X(std::ostream& out, SC_variables sc, double * variable, int y, int z);
@@ -107,6 +111,7 @@ void output_settings_0D_cell(Cell_parameters p, Simulation_parameters sim, CRU_v
 // Disclaimer and citations
 void output_disclaimer_citations(Cell_parameters p, Simulation_parameters sim);
 void output_disclaimer_citations_tissue(Cell_parameters p, Tissue_parameters t);
+void output_disclaimer_citations_tissue_network(Cell_parameters p, Tissue_parameters t);
 void output_disclaimer_citations_spatial_cell(Cell_parameters p, Simulation_parameters sim);
 
 #endif

@@ -693,7 +693,7 @@ int main(int argc, char *argv[])
 		// End tissue loop - 2 ====================================//|
 
 		// Output data to files - average and linescan ============\\|
-		if (iteration_counter%(int)(1/Sim.dt) == 0) // if sim_time is an integer (i.e. per ms)
+		if (iteration_counter % Variables[0].dtinv == 0) // if sim_time is an integer (i.e. per ms)
 		{
 			// Whole cell averages for the three cells with indexes cell1-3ref
 			output_currents(out_cu, sim_time, Variables[cell1ref], State[cell1ref], Vm[cell1ref]);				// lib/Outputs.cpp || V, currents, gating variables, concs etc
@@ -737,7 +737,7 @@ int main(int argc, char *argv[])
         // End Output data to files - average and linescan ========//|
 
         iteration_counter ++;  // number of steps in dt
-        if (iteration_counter%(500 *((int)(1/Sim.dt))) == 0) printf("Time = %.0fms\n",sim_time); // output every 500 ms
+        if (iteration_counter%(100*(Variables[0].dtinv)) == 0) printf("Time = %.0fms\n",sim_time); // output every 500 ms
     }
     // End Time loop ============================================================================//|
 
@@ -787,6 +787,7 @@ int main(int argc, char *argv[])
     printf("/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n");
     output_disclaimer_citations(Params_global, Sim);   // lib/Outputs.c
     output_disclaimer_citations_tissue(Params_global, Tissue);
+    output_disclaimer_citations_tissue_network(Params_global, Tissue);
     printf("--\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\n\n");
 
     // Free memory

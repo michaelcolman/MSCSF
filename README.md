@@ -1,22 +1,52 @@
-# MSCSF
+____________________________________________________________________
+Source code for the "Multi-scale cardiac simulation framework", including multiple models and associated with multiple publications.
+    
+    Please cite using the Zenodo resource: 10.5281/zenodo.10204624 (all versions doi)
 
+This version is released with the publications:
+    "Patchy fibrosis promotes trigger-substrate interactions that both generate and maintain atrial fibrillation"
+    Michael A Colman, Roshan Sharma, Oleg V Aslanidi, Jichao Zhao
+    Interface Focus. 2023 Dec 15;13(6):20230041. doi: 10.1098/rsfs.2023.0041
+
+    "Interactions between calcium-induced arrhythmia triggers and the electrophysiological-anatomical substrate underlying induction of atrial fibrillation"
+    Colman, Michael A., Varela, Marta, McLeod, Rob, Hancox, Jules C and Aslanidi, Oleg V
+    The Journal of Physiology (in press. doi: 10.1113/JP285740)
+
+Original source code presented with:
+    "Arrhythmia Mechanisms and Spontaneous Calcium Release: Bi-directional coupling between re-entry and focal excitation”
+    Michael A Colman, PLOS Comp Biol 2019 Aug 8;15(8):e107260
+
+
+NOT included in this package:
+    The folder containing all geometry files (tissue and cell structures) and state files. These can be found here:
+    https://github.com/michaelcolman/MSCSF_state_and_geometry_files
+    and is kept up-to-date with additional geometry files associated with new publications
+____________________________________________________________________
+
+____________________________________________________________________
 Basic instructions for compiling and running the code under different conditions.
 Please see also "BASIC_INSTRUCTIONS_MODDING.txt" for how to update the code with new models and functionality
 Please see also example script files for examples and illustrations of performing different functionality
 See "Full_documentation.pdf" for the full disclaimer including citation list, and for more detailed breakdown
 code structure for more complex modding.
-See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier identifiers and filenames.
+See "Single_cell_model_list.txt" and "Tissue_model_list.txt"" for all available cell and tissue models, thier identifiers and filenames.
+____________________________________________________________________
 
+____________________________________________________________________
 0) Package contents:
-    BASIC_INSTRUCTIONS_USE.txt (this file)
+    BASIC_USE.txt (this file)
     BASIC_INSTRUCTIONS_MODIFICATION.txt
     Full_documentation.pdf
     CODE                            - source code for the framework
     MSCSF_state_and_geometry_files  - directory containing all state and geometry files (see instruction 2).
     Simulations                     - simulations folder
     Example_scripts                 - further directories with example scripts for most functionality
+    Single_cell_model_list.txt
+    Tissue_model_list.txt
+____________________________________________________________________
 
-1) Compile the code.
+____________________________________________________________________
+1) Compile the code (mac and Linux)
     
     Navigate to "CODE"
     Copy the Makefile_linux or Makefile_mac to a file called "Makefile"
@@ -25,9 +55,11 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
 
     •	“model_single_native”   – Single cell implementations for traditional cell models
     •	“model_tissue_native”   – Tissue implementations using traditional cell models
+    •	“model_tissue_network”  – Tissue implementations using traditional cell models, network model of coupling
     •	“model_single_3D”       – 3D stochastic spatial calcium handling single cell models
     •	“model_single_0D”       – Non-spatial equivalent to the 3D stochastic model
     •	“model_tissue_0D”       – Tissue models using the 0D derived calcium system
+    •	“model_tissue_0D_network” – Tissue models using the 0D derived calcium system, network model of coupling
     •	“model_Ca_clamp_3D”     – Ca2+ clamp protocol for 3D single cell
     •	“model_Ca_clamp_OD”     – Ca2+ clamp protocol for 0D single cell + Spontaneous Release Functions
     •   "bin_to_vtk_tissue"     - converts binary data to plain text and/or vtk data files; tissue models
@@ -36,17 +68,31 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
     You can also type   "make x" where x is the executable name without the "model_" prefix to compile just that implementation.
                         "make bin_to_vtk_{tissue/3Dcell}" to compile just these post-processing tools
 
+1b) Compile the code (Windows)
+
+    If you do not have a compiler, download MinGW (a version has been provided for you). Place this in a sensible location on your computer
+    Ensure the Compile.bat points to the path of your compiler (right click and select "edit", then put the path of your compiler)
+    Click Compile.bat to compile all versions of the code, or Compile_single_cell_only.bat to compile just the native single cell models
+    NOTE: no parallelisation included in these versions - add OMP as you see fit, and the code should work fine
+____________________________________________________________________
+
+
+____________________________________________________________________
 2) Set your path - this is the location your tissue geometry and all state files will be stored/read/written
     
     Move the folder "MSCSF_state_and_geometry_files" to a sensible location
     Add the full path to PATH.txt e.g. "/Users/username/MSCSF_state_and_geometry_files"
+____________________________________________________________________
 
+____________________________________________________________________
 3) Run code
     
     Can run within the CODE folder, but it is suggested to run elsewhere (e.g. simulations folder).
     Copy the executable desired and PATH.txt to your simulations folder
     Execute with default setup: ./model_X
+____________________________________________________________________
 
+____________________________________________________________________
 4) Running the code with non-default options
 
     Multiple example scripts have been provided in Example_scripts, to demonstrate full functionality.
@@ -60,7 +106,9 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
     run "./model_X Display_args" to print to screen all argument options for that implementation
     Full options and description is in the documentation; below (point 7) are given just the basics.
     Also refer to the example scripts, or copy desired scripts into your simulations folder and modify them as desired.
+____________________________________________________________________
 
+____________________________________________________________________
 5) Main outputs (full list in documentation):
     
     The simulations will produce multiple outputs.
@@ -208,7 +256,9 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
         If a dynamic mode is selected, these above files will be appended with various CaSR concentrations, and contain the distribution at that CaSR. 
             The additional file “../CaSR_dependence.dat” will also be created which tracks how the SRF parameters vary with CaSR (1 – CaSR; 2 – PSCRE; 3 – ti_sep; 
             4 – ti_width_1; 5 – ti_width_2; 6 – MD; 7 – duration_width_1; 8 – duration width 2).
+____________________________________________________________________
 
+____________________________________________________________________
 6) Visualsing spatial data (3D-cell models and tissue models):
 
     If running these models, with default settings, the simulation will write only binary data for the spatial outputs 
@@ -231,7 +281,9 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
     Examples: 
         "./bin_to_vtk_tissue start_time 100 end_time 200 interval 10 Model_type integrated Variable Cai Write_vtk On Write_data On. Tissue_order 2D Tissue_model basic Reference X Results_Reference Y" 
         "./bin_to_vtk_3Dcell start_time 100 end_time 200 interval 10 Variable CaSR Write_vtk On Write_data On Write_slices On YZ_slice_x 5 Cell_size standard Sim_cell_size full Reference X Results_Reference Y"
+____________________________________________________________________
 
+____________________________________________________________________
 7) Basic arguments
 
     • All implementations:
@@ -331,7 +383,9 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
         Direct_modulation_map   [On/Off]    -> Whether to apply direct modulation (X_scale;Ix_va_ss_shift;Ix_vi_ss_shift;Ix_va_tau_scale;Ix_vi_tau_scale) 
                                                 homogeneously or by map. MAP MUST BE INTEGER for direct_mod on or off, not continuos (as with above maps)
         {X}_map_file            [filename]  -> explicitly set the file for the modulation map X (X=ISO/ACh/Remodelling .....)
+____________________________________________________________________
 
+____________________________________________________________________
 8) Using a settings file
     
     You can use settings files to store the options passed in, for quick reproduction etc
@@ -357,4 +411,5 @@ See "AVAILABLE_MODEL_LIST.txt" for all available cell and tissue models, thier i
     And performing:
         ./model_single_native Settings_file [filename] Remodelling AF_GB
         will apply BCL = 345; Model = hAM_CRN; Results_Reference = file_test; Remodelling = AF_GB
+____________________________________________________________________
         

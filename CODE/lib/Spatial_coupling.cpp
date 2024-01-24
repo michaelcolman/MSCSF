@@ -496,7 +496,7 @@ int read_geo_file(SC_variables *sc, int *geo, const char *filein, const char * f
     // Write vtk of geoemtry to Outputs directory
     for (int ncell = 1; ncell < Ncelltypes+1; ncell++) // from 1 to N, not 0 to N-1
     {
-        sprintf(string, "%s/Geometry_%s_celltype_%d.vtk", Output_dir, ref, ncell);
+        sprintf(string, "%s/Geometry_%s_celltype_%02d.vtk", Output_dir, ref, ncell);
 
         FILE *out;
         out = fopen(string, "wt");

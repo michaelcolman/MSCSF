@@ -217,6 +217,85 @@ void set_celltype_native_minimal(Cell_parameters *p)
         p->IK1_Erev_shift       += 5;
         p->GNCX                 *= 0.5;
 	}
+    else if (strcmp(p->Celltype, "EPI_CCS") == 0)
+    {
+        p->Gto          *= 0.5;
+        p->GKur         *= 0.2;
+        p->GNa          *= 0.4;
+        p->GCaL         *= 3;
+        p->GKr          *= 0.3;
+        p->GKs          *= 0.3;
+        p->GK1          *= 0.5;
+    }
+    else if (strcmp(p->Celltype, "M_CCS") == 0)
+    {
+        p->GKur         *= 0.2;
+        p->Gto          *= 0.5;
+        p->GKr          *= 0.6;
+        p->GCaL         *= 1.1;
+        p->GNa          *= 0.4;
+        p->GCaL         *= 3;
+        p->GKr          *= 0.3;
+        p->GKs          *= 0.3;
+        p->GK1          *= 0.5;
+    }
+    else if (strcmp(p->Celltype, "ENDO_CCS") == 0)
+    {
+        p->GKur         *= 0.2;
+        p->Gto          *= 0.5;
+        p->GKr          *= 0.9;
+        p->Gup          *= 1.1;
+        p->Gleak        *= 1.1;
+        p->GNa          *= 0.4;
+        p->GCaL         *= 3;
+        p->GKr          *= 0.3;
+        p->GKs          *= 0.3;
+        p->GK1          *= 0.5;
+    }
+    else if (strcmp(p->Celltype, "PK_CCS") == 0)
+    {
+        p->GKur         *= 0.2;
+        p->Gto          *= 0.5;
+        p->GKr          *= 0.9;
+        p->Gup          *= 1.1;
+        p->Gleak        *= 1.1;
+        p->GCaL         *= 1.5;
+        p->GNa          *= 2;
+        p->GNa          *= 0.4;
+        p->GCaL         *= 3;
+        p->GKr          *= 0.3;
+        p->GKs          *= 0.3;
+        p->GK1          *= 0.5;
+    }
+    else if (strcmp(p->Celltype, "RA_CCS") == 0)
+    {
+        p->Gto                  *= 1.75;
+        p->GKur                 *= 1.1;//1.2;
+        p->Ito_va_ss_shift      *= -5;
+        p->GK1                  *= 0.5;
+        p->GKr                  *= 0.25;
+        p->GKs                  *= 0.25;
+        p->GCaL                 *= 0.75;
+        p->ICaL_va_ss_shift     += 2.5;
+        p->Gup                  *= 1.7;
+        p->Gleak                *= 1.3;
+        p->IK1_Erev_shift       += 5;
+        p->GNa          *= 0.4;
+        p->GCaL         *= 3;
+        p->GKr          *= 0.3;
+        p->GKs          *= 0.3;
+        p->GK1          *= 0.5;
+    }
+    else if (strcmp(p->Celltype, "Pace_CCS") == 0)
+    {
+        p->GNa                  *= 0.25;
+        p->GNa          *= 0.4*1.75*1.5*1.35;
+        p->GCaL         *= 3;
+        p->GKr          *= 0.3;
+        p->GKs          *= 0.3;
+        p->GK1          *= 0.5;
+        p->IK1_Erev_shift       += 20;
+    }
 	else
 	{
 		printf("ERROR: \"%s\" is not a valid Celltype for the minimal model. Please check Model_minimal.cpp for options\n\n", p->Celltype);

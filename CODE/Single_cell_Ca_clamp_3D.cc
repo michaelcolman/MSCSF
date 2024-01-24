@@ -535,7 +535,7 @@ int main(int argc, char *argv[])
         Vm			= State.Vm;
 
         // Output data to files
-        if (iteration_counter%(int)(1/Sim.dt) == 0) // if sim_time is an integer (i.e. per ms)
+        if (iteration_counter % Variables.dtinv == 0) // if sim_time is an integer (i.e. per ms)
         {
             output_CRU(out_cru, sim_time, Ca, CRU, Vm);										// lib/Outputs.cpp
 
@@ -564,7 +564,7 @@ int main(int argc, char *argv[])
         }
 
         iteration_counter ++;
-        if (iteration_counter%(500*((int)(1/Sim.dt))) == 0) printf("Time = %.0fms\n",sim_time); // output every 500 ms
+        if (iteration_counter%(100*(Variables.dtinv)) == 0) printf("Time = %.0fms\n",sim_time); // output every 500 ms
     }
     // End Time loop ============================================================================//|
 

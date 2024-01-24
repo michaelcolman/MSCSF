@@ -990,6 +990,8 @@ void set_LTCC_rates(Cell_parameters p, Dyad_variables *d, double Ca_ds, double V
     // Voltage activation ===========\\|
     if (strcmp(Model, "hVM_ORD_s") == 0) 		set_ICaL_hVM_ORD_simple_va_rates(p, &d->ICaL_va_ss, &d->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);		
     else if (strcmp(Model, "hAM_CAZ_s") == 0) 	set_ICaL_hAM_CAZ_simple_va_rates(p, &d->ICaL_va_ss, &d->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);
+    else if (strcmp(Model, "dAM_VA") == 0)      set_ICaL_dAM_VA_va_rates(p, &d->ICaL_va_ss, &d->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);
+    else if (strcmp(Model, "mCRN") == 0)      set_ICaL_mCRN_va_rates(p, &d->ICaL_va_ss, &d->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);
     else 								 		set_Ip2d_va_rates(p, &d->ICaL_va_ss, &d->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);
 
     d->ICaL_va_al_01                = d->ICaL_va_ss/d->ICaL_va_tau;         // Rate from state va0 to va1 (V-dependent)
@@ -1001,6 +1003,8 @@ void set_LTCC_rates(Cell_parameters p, Dyad_variables *d, double Ca_ds, double V
 
     // Voltage inactivation =========\\|
     if (strcmp(Model, "hAM_CAZ_s") == 0) 	set_ICaL_hAM_CAZ_simple_vi_rates(p, &d->ICaL_vi_ss, &d->ICaL_vi_tau, Vm_inac_ss, Vm_inac_tau, p.ICaL_vi_ss_kscale);
+    else if (strcmp(Model, "dAM_VA") == 0)  set_ICaL_dAM_VA_vi_rates(p, &d->ICaL_vi_ss, &d->ICaL_vi_tau, Vm_inac_ss, Vm_inac_tau, p.ICaL_vi_ss_kscale);
+    else if (strcmp(Model, "mCRN") == 0)  set_ICaL_mCRN_vi_rates(p, &d->ICaL_vi_ss, &d->ICaL_vi_tau, Vm_inac_ss, Vm_inac_tau, p.ICaL_vi_ss_kscale);
     else                                 	set_Ip2d_vi_rates(p, &d->ICaL_vi_ss, &d->ICaL_vi_tau, Vm_inac_ss, Vm_inac_tau, p.ICaL_vi_ss_kscale);
 
     d->ICaL_vi_al                   = d->ICaL_vi_ss/d->ICaL_vi_tau;
@@ -1011,6 +1015,8 @@ void set_LTCC_rates(Cell_parameters p, Dyad_variables *d, double Ca_ds, double V
     d->Ca_Ca_bar                    = Ca_ds/p.LTCC_Ca_bar;
     d->ICaL_ci_tau                  = 15; // ms
     if (strcmp(Model, "hAM_CAZ_s") == 0) 	d->ICaL_ci_tau = 30; // ms
+    if (strcmp(Model, "dAM_VA") == 0)       d->ICaL_ci_tau = 30; // ms
+    //if (strcmp(Model, "mCRN") == 0)       d->ICaL_ci_tau = 30; // ms
 
     d->ICaL_ci_ss                   = 1/(1 + d->Ca_Ca_bar*d->Ca_Ca_bar);
     d->ICaL_ci_al                   = d->ICaL_ci_ss/d->ICaL_ci_tau;

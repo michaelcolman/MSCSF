@@ -510,7 +510,7 @@ int main(int argc, char *argv[])
         Vm			= State.Vm;
 
         // Output data to files
-        if (iteration_counter%(int)(1/Sim.dt) == 0) // if sim_time is an integer (i.e. per ms)
+        if (iteration_counter % Variables.dtinv == 0) // if sim_time is an integer (i.e. per ms)
         {
             output_currents(out_cu, sim_time, Variables, State, Vm);        // lib/Outputs.cpp || V, currents, gating variables, concs etc
             output_excitation_properties(out_ex, sim_time, Variables, Vm);  // lib/Outputs.cpp || APD, excitation state, dv/dt etc
@@ -518,11 +518,11 @@ int main(int argc, char *argv[])
 		}
 
         // Print SRF ti and NRyRopeak to file for every actually induced SCRE
-        if (iteration_counter%(50*((int)(1/Sim.dt))) == 0) // as 50 is less than time between successive SRF, we only need to sample at 50 ms intervals
+        if (iteration_counter%(50*Variables.dtinv) == 0) // as 50 is less than time between successive SRF, we only need to sample at 50 ms intervals
         print_SRF_properties_to_file(&SRF, out_srf_prop, 1);
 
 		iteration_counter ++; // number of steps in dt
-		if (iteration_counter%(2000*((int)(1/Sim.dt))) == 0) printf("Time = %.0fms\n",sim_time); // output every 2000 ms
+		if (iteration_counter%(2000*Variables.dtinv) == 0) printf("Time = %.0fms\n",sim_time); // output every 2000 ms
 	}
 	// End Time loop ============================================================================//|
 

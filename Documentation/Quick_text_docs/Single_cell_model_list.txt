@@ -1,0 +1,163 @@
+Cell models:
+
+"Model [X]":
+    Model reference:    "minimal"
+    Model:              hybrid-minimal model for integration with physiological Ca2+ currents 
+    File:               lib/Model_minimnal.cpp
+    Reference:          Colman 2019
+    
+    Model reference:    "hAM_CRN"
+    Model:              CRN human atrial cell model
+    File:               lib/Model_hAM_CRN.cpp
+    Reference:          Courtemanche et al. 1998 Am. J. Physiol.-Heart Circ. Physiol. 275, H301–H321
+    
+    Model reference:    "hAM_NG"
+    Model:              Nygren et al human atrial cell model
+    File:               lib/Model_hAM_NG.cpp
+    Reference:          Nygren et al. 1998 Circ. Res. 82, 63–81
+    
+    Model reference:    "hAM_MT"
+    Model:              Maleckar et al human atrial cell model
+    File:               lib/Model_hAM_MT.cpp
+    Reference:          Maleckar et al. 2009 Am. J. Physiol. Heart Circ. Physiol. 297, H1398-1410.
+                            and Nygren et al. 1998 Circ. Res. 82, 63–81
+    
+    Model reference:    "hAM_GB"
+    Model:              Grandi et al. human atrial cell model
+    File:               lib/Model_hAM_GB.cpp
+    Reference:          Grandi et al. 2011 Circ. Res. 109, 1055–1066. 
+                            and Chang et al 2014 PLOS Computational Biology 10 (12): e1004011
+    
+    Model reference:    "hAM_WL_CRN"
+    Model:              Colman et al, Workman-lab human atrial cell model - CRN based
+    File:               lib/Model_hAM_WL.cpp
+    Reference:          Colman et al. 2018 Front. Physiol. 9 1211 
+                            and Courtemanche et al. 1998 Am. J. Physiol.-Heart Circ. Physiol. 275, H301–H321
+    
+    Model reference:    "hAM_WL_GB"
+    Model:              Colman et al, Workman-lab human atrial cell model - GB based
+    File:               lib/Model_hAM_WL.cpp
+    Reference:          Colman et al. 2018 Front. Physiol. 9 1211 
+                            and Grandi et al. 2011 Circ. Res. 109, 1055–1066.
+                            and Chang et al 2014 PLOS Computational Biology 10 (12): e1004011
+    
+    Model reference:    "hAM_{CRN/NG/GB}_mWL""
+    Model:              Colman et al, Workman-lab human atrial currents incorporated into CRN, NG or GB models
+    File:               lib/Model_hAM_WL.cpp
+    Reference:          Colman et al. 2018 Front. Physiol. 9 1211 and 
+                            Courtemanche et al. 1998 Am. J. Physiol.-Heart Circ. Physiol. 275, H301–H321, 
+                            Nygren et al. 1998 Circ. Res. 82, 63–81
+                            Grandi et al. 2011 Circ. Res. 109, 1055–1066 / Chang et al 2014 PLOS Computational Biology 10 (12): e1004011
+    
+    Model reference:    "hVM_ORD_s"
+    Model:              'Hara-Rudy human ventricular cell model, simplified for spatial cell modelling
+    File:               lib/Model_hVM_ORD_simple.cpp
+    Reference:          O’Hara et al. 2011 PLOS Comp. Biol. 7, e1002061 
+                            and Colman 2019
+    
+    Model reference:    "hAM_CAZ_s"
+    Model:              Colman-Aslanidi-Zhang human atria cell model, simplified for spatial cell modelling
+    File:               lib/Model_hAM_CAZ_simple.cpp
+    Reference:          Colman et al. 2013 J. Physiol. 591, 4249–4272 
+                            and Colman 2019
+    
+    Model reference:    "dAM_VA"
+    Model:              Varela-Aslanidi dog atrial cell model
+    File:               lib/Model_dAM_VA.cpp
+    Reference:          Varela et al. 2016 PLOS Comp. Biol. 12, e1005245 
+                            and Ramirez et al. 2000 Am J Physiol Heart Circ Physiol 279(4):H1767-85.
+    
+__________________________________________________________________________________________________
+
+Regional cell models:
+
+"Celltype [X]":
+    Human atrial regional cell models:
+        Implemented regions::   "RA", "PM", "CT", "RAA", "AVR", "BB", "LA", "AS", "LAA", "PV"
+        Can be applied to:      All human atrialc cell models
+        In File/function:       lib/Model.cpp -> set_celltype_hAM()
+        Reference:              Colman et al. 2013 J. Physiol. 591, 4249–427
+
+    "minimal" model:
+        Implemented regions::   "EPI", "M", "ENDO", "RA", "RA_small_mammal"
+        Can be applied to:      minimal model only
+        In File/function:       lib/Model_minimal.cpp -> set_celltype_native_minimal()
+        Reference:              Colman 2019
+
+    "hVM_ORD_s" model:
+        Implemented regions::   "EPI", "M", "ENDO"
+        Can be applied to:      Simplified, integrated ORd model only
+        In File/function:       lib/Model_hVM_ORD_simpleicpp -> set_celltype_native_hVM_ORD_simple()
+        Reference:              O’Hara et al. 2011 PLOS Comp. Biol. 7, e1002061
+                                    and Colman 2019
+    
+    Dog atrial regional cell models:
+        Implemented regions::   "RA", "PM", "CT", "BB", "LA", "PV"
+        Can be applied to:      dAM_VA only (dog atrial model)
+        In File/function:       lib/Model_dAM_VA.cpp -> set_celltype_native_dAM_VA()
+        Reference:              Varela et al. 2016 PLOS Comp. Biol. 12, e1005245
+
+__________________________________________________________________________________________________
+
+Modulation models:
+
+"Remodelling [X]":
+    Modulation reference:   "AF_GB"
+    Description:            chronic atrial fibrillation remodelling, human
+    Can be applied to:      All human atrial cell models
+    In File/function:       lib/Model.c -> set_remodelling_hAM()
+    Reference:              Grandi et al. 2011 Circ. Res. 109, 1055–1066
+    
+    Modulation reference:   "AF_Col_{1-4}"
+    Description:            chronic atrial fibrillation remodelling, human
+    Can be applied to:      All human atrial cell models
+    In File/function:       lib/Model.c -> set_remodelling_hAM()
+    Reference:              Colman et al. 2013 J. Physiol. 591, 4249–427
+    
+    Modulation reference:   "RSERCA_NCX" 
+    Description:            Non-physiological remodelling to promote SR-loading; SERCA up NCX down; loosely represents HF or similar
+    Can be applied to:      All cell models, designed for integrated/spatial implementations 
+    In File/function:       lib/Model.c -> set_global_remodelling() 
+    Reference:              Colman 2019 
+
+    Modulation reference:   "RCRU" 
+    Description:            Non-physiological remodelling to promote whole-cell SCRE; faster inter-CRU coupling
+    Can be applied to:      All cell models, designed for integrated/spatial implementations (has no effect on native!) 
+    In File/function:       lib/Model.c -> set_global_remodelling() 
+    Reference:              Colman 2019 
+
+"ISO_model [X]":
+    Modulation reference:   "GB" 
+    Description:            sympathetic autonomic regulation / isoprenaline in human atrial cells
+    Can be applied to:      All human atrial cell models
+    In File/function:       lib/Model.c -> set_ISO_hAM()
+    Reference:              Grandi et al. 2011 Circ. Res. 109, 1055–1066.
+    
+    Modulation reference:   "Col" 
+    Description:            sympathetic autonomic regulation / isoprenaline in human atrial cells
+    Can be applied to:      All human atrial cell models
+    In File/function:       lib/Model.c -> set_ISO_hAM()
+    Reference:              Colman 2014 pg:115–55. Springer Theses. https://doi.org/10.1007/978-3-319-01643-6_5.
+    
+    Modulation reference:   "Toy_methods_demonstration" 
+    Description:            sympathetic autonomic regulation / isoprenaline; non-biophysically detailed, representatve model.
+    Can be applied to:      minimal, hAM_CAZ_s, hAM_ORD_s
+    In File/function:       lib/Model_minimal.cpp -> set_modulation_ISO_native_minimal()
+                            lib/Model_hAM_CAZ_simple.cpp -> set_modulation_ISO_native_hAM_CAZ_simple()
+                            lib/Model_hVM_ORD_simple.cpp -> set_modulation_ISO_native_hVM_ORD_simple()
+    Reference:              Colman 2019
+
+"Mutation [X]":
+    Modulation reference:   "D322H", "Y155C" 
+    Description:            mutations to IKur, human atria
+    Can be applied to:      All human atrial cell models
+    In File/function:       lib/Model.c -> set_mutation_hAM()
+    Reference:              Colman et al. 2017 PLOS Comp Biol 13(6):e1005587
+    
+"Agent [X]":
+    Modulation reference:   "MC-II-157c" 
+    Description:            hERG activator compound
+    Can be applied to:      All models (which have IKr)
+    In File/function:       lib/Model.cpp -> set_global_Agents()
+    Reference:              Colman et al. 2017 Front. Physiol 8 and Guo et al. 2014 PLOS One 9, e105553
+        

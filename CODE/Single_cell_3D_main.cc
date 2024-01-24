@@ -617,7 +617,7 @@ int main(int argc, char *argv[])
 		Vm			= State.Vm;
 
 		// Output data to files
-		if (iteration_counter%(int)(1/Sim.dt) == 0) // if sim_time is an integer (i.e. per ms)
+		if (iteration_counter % Variables.dtinv == 0)// if sim_time is an integer (i.e. per ms)
 		{
 			output_currents(out_cu, sim_time, Variables, State, Vm);		// lib/Outputs.cpp || V, currents, gating variables, concs etc
 			output_excitation_properties(out_ex, sim_time, Variables, Vm);	// lib/Outputs.cpp || APD, excitation state, dv/dt etc
@@ -656,7 +656,7 @@ int main(int argc, char *argv[])
         }
 
         iteration_counter ++; // number of steps in dt
-        if (iteration_counter%(500*((int)(1/Sim.dt))) == 0) printf("Time = %.0fms\n",sim_time); // output every 500 ms
+        if (iteration_counter%(100*(Variables.dtinv)) == 0) printf("Time = %.0fms\n",sim_time); // output every 500 ms
     }
     // End Time loop ============================================================================//|
 

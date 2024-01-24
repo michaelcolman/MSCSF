@@ -127,6 +127,8 @@ void set_parameters_native(Cell_parameters *p, char const *Model)
 	else if (strcmp(Model, "hVM_ORD_s") == 0)			set_parameters_native_hVM_ORD_simple(p);	// lib/Model_hVM_ORD_simple.cpp
 	else if (strcmp(Model, "hAM_CAZ_s") == 0)			set_parameters_native_hAM_CAZ_simple(p);	// lib/Model_hAM_CAZ_simple.cpp
 	else if (strcmp(Model, "dAM_VA") == 0)				set_parameters_native_dAM_VA(p);	        // lib/Model_dAM_VA.cpp
+	else if (strcmp(Model, "mCRN") == 0)				set_parameters_native_mCRN(p);	        // lib/Model_mCRN.cpp
+	else if (strcmp(Model, "hVM_TT") == 0)	            set_parameters_native_hVM_TT(p);	// lib/Model_hVM_TT.cpp // NEW MODEL
 	//else if (strcmp(Model, "speciesCELL_MODEL") == 0)	set_parameters_native_speciesCELL_MODEL(p);	// lib/Model_speciesCELL_MODEL.cpp // NEW MODEL
 
 	// 2 - models which inherit some or all parameters from other models
@@ -168,6 +170,8 @@ void set_parameters_spatial_Ca(Cell_parameters *p, char const *Model)
 	if (strcmp(Model, "minimal") == 0);			// do nothing -> same as default
 	else if (strcmp(Model, "hVM_ORD_s") == 0); 	// do nothing -> same as default
 	else if (strcmp(Model, "hAM_CAZ_s") == 0)	update_parameters_integrated_hAM_CAZ_simple(p);		// lib/Model_hAM_CAZ_simple.cpp
+    else if (strcmp(Model, "dAM_VA") == 0)      update_parameters_integrated_dAM_VA(p);             // lib/Model_dAM_VA.cpp                                                                                                   
+    else if (strcmp(Model, "mCRN") == 0)      update_parameters_integrated_mCRN(p);             // lib/Model_mCRN.cpp                                                                                                   
 	//else if (strcmp(Model, "speciesCELL_MODEL") == 0)		update_parameters_integrated_speciesCELL_model(p);	// lib/Model_speciesCELL_MODEL.cpp
 	else
 	{
@@ -191,6 +195,8 @@ void initial_conditions_native(State_variables *s, Cell_parameters p, char const
 	else if (strcmp(Model, "hVM_ORD_s") == 0) 				initial_conditions_native_hVM_ORD_simple(s, p);   	// lib/Model_hVM_ORD_simple.cpp
 	else if (strcmp(Model, "hAM_CAZ_s") == 0) 				initial_conditions_native_hAM_CAZ_simple(s, p);   	// lib/Model_hAM_CAZ_simple.cpp
 	else if (strcmp(Model, "dAM_VA") == 0) 					initial_conditions_native_dAM_VA(s, p);     		// lib/Model_dAM_VA.cpp // NEW MODEL
+	else if (strcmp(Model, "mCRN") == 0) 					initial_conditions_native_mCRN(s, p);     		// lib/Model_mCRN.cpp // NEW MODEL
+	else if (strcmp(Model, "hVM_TT") == 0) 	initial_conditions_native_hVM_TT(s, p);   // lib/Model_hVM_TT.cpp // NEW MODEL
 	//else if (strcmp(Model, "speciesCELL_MODEL") == 0) 	initial_conditions_native_speciesCELL_MODEL(s, p);   // lib/Model_speciesCELL_MODEL.cpp // NEW MODEL
 	else
 	{
@@ -212,6 +218,8 @@ void compute_model_native(Cell_parameters p, Model_variables *var, State_variabl
 	else if (strcmp(p.Model, "hAM_GB_mWL") == 0)    			compute_model_hAM_WL_native(p, var, s, Vm, dt); 		// lib/Model_hAM_WL.cpp
 	else if (strcmp(p.Model, "hAM_NG_mWL") == 0) 				compute_model_hAM_WL_native(p, var, s, Vm, dt); 		// lib/Model_hAM_WL.cpp
 	else if (strcmp(p.Model, "dAM_VA") == 0)   					compute_model_dAM_VA_native(p, var, s, Vm, dt);	// lib/Model_dAM_VA.cpp // NEW MODEL
+	else if (strcmp(p.Model, "mCRN") == 0)   					compute_model_mCRN_native(p, var, s, Vm, dt);	// lib/Model_mCRN.cpp // NEW MODEL
+	else if (strcmp(p.Model, "hVM_TT") == 0)   	compute_model_hVM_TT_native(p, var, s, Vm, dt);	// lib/Model_hVM_TT.cpp // NEW MODEL
 	//else if (strcmp(p.Model, "speciesCELL_MODEL") == 0)   	compute_model_speciesCELL_MODEL_native(p, var, s, Vm, dt);	// lib/Model_speciesCELL_MODEL.cpp // NEW MODEL
 	else
 	{
@@ -225,6 +233,8 @@ void compute_model_integrated(Cell_parameters p, Model_variables *var, State_var
 	if (strcmp(p.Model, "minimal") == 0)                        compute_model_minimal_integrated(p, var, s, Vm, dt);        // lib/Model_minimal.cpp
 	else if (strcmp(p.Model, "hVM_ORD_s") == 0)                 compute_model_hVM_ORD_simple_integrated(p, var, s, Vm, dt); // lib/Model_hVM_ORD_simple.cpp
 	else if (strcmp(p.Model, "hAM_CAZ_s") == 0)                 compute_model_hAM_CAZ_simple_integrated(p, var, s, Vm, dt); // lib/Model_hAM_CAZ_simple.cpp
+	else if (strcmp(p.Model, "dAM_VA") == 0)                    compute_model_dAM_VA_integrated(p, var, s, Vm, dt);         // lib/Model_dAM_VA.cpp
+	else if (strcmp(p.Model, "mCRN") == 0)                    compute_model_mCRN_integrated(p, var, s, Vm, dt);         // lib/Model_mCRN.cpp
     //else if (strcmp(p.Model, "speciesCELL_MODEL") == 0)         compute_model_speciesCELL_MODEL_integrated(p, var, s, Vm, dt); // lib/Model_speciesCELL_MODEL.cpp // NEW MODEL
 	else
 	{
@@ -294,6 +304,8 @@ void compute_and_output_current_functions(Cell_parameters p, Model_variables *va
 		else if (strcmp(p.Model, "hVM_ORD_s") == 0)               set_gate_rates_hVM_ORD_simple_native(p, var, Vm, p.Cai);  // lib/Model_hVM_ORD_simple.cpp
 		else if (strcmp(p.Model, "hAM_CAZ_s") == 0)               set_gate_rates_hAM_CAZ_simple_native(p, var, Vm, p.Cai);  // lib/Model_hAM_CAZ_simple.cpp
 		else if (strcmp(p.Model, "dAM_VA") == 0)                  set_gate_rates_dAM_VA_native(p, var, Vm, p.Cai);     		// lib/Model_dAM_VA.cpp // NEW MODEL
+		else if (strcmp(p.Model, "mCRN") == 0)                  set_gate_rates_mCRN_native(p, var, Vm, p.Cai);     		// lib/Model_mCRN.cpp // NEW MODEL
+		else if (strcmp(p.Model, "hVM_TT") == 0)     set_gate_rates_hVM_TT_native(p, var, Vm, p.Cai); // lib/Model_hVM_TT.cpp // NEW MODEL
 		//else if (strcmp(Model, "speciesCELL_MODEL") == 0)     set_gate_rates_speciesCELL_MODEL_native(p, var, Vm, p.Cai); // lib/Model_speciesCELL_MODEL.cpp // NEW MODEL
 
 		// INa
@@ -393,16 +405,24 @@ void compute_and_output_current_functions(Cell_parameters p, Model_variables *va
 // Stimulus current =============================================================================\\|
 void stimulus_setup(Cell_parameters p, Model_variables *var, double dt, int BCL, int S2, int Paced_time)
 {
-	var->stimduration_int		= p.stimduration*(1/dt);
-	var->BCL_int				= BCL * (int)(1/dt);
+    var->dtinv_double           = (1.0/dt);
+    var->dtinv                  = (int)var->dtinv_double;
+    if (fmod (var->dtinv_double,1.0) != 0.0)
+    {
+        printf("ERROR: 1/dt (= %f) for your chosen dt is not an integer; this will cause issues with iterations\n", var->dtinv_double);
+        exit(1);
+    }
+    
+    var->stimduration_int		= p.stimduration * var->dtinv;
+	var->BCL_int				= BCL * var->dtinv;
 	var->stimflag				= false;
 	var->S2_stimflag			= false;
 	var->stimcount				= 0;
 	var->stimcount_S2			= 0;
 	var->Istim					= 0.0;
 	var->Istim_S2				= 0.0;
-	var->S2_int					= S2 * (int)(1/dt);
-	var->Paced_time_int			= Paced_time * (int)(1/dt);
+	var->S2_int					= S2 * var->dtinv;
+	var->Paced_time_int			= Paced_time * var->dtinv;
 }
 
 void compute_Istim(Cell_parameters p, Model_variables *var, double Paced_time, double S2_time, double time, int time_int)
@@ -493,6 +513,8 @@ void set_heterogeneity_and_modulation_native(Cell_parameters *p)
 	else if (strcmp(p->Model, "hVM_ORD_s") == 0) 	set_het_mod_hVM_ORD_simple(p); 	// lib/Model_hVM_ORD_simple.cpp
 	else if (strcmp(p->Model, "hAM_CAZ_s") == 0)	set_het_mod_hAM_CAZ_simple(p); 	// lib/Model_hAM_CAZ_simple.cpp
 	else if (strcmp(p->Model, "dAM_VA") == 0) 		set_het_mod_dAM_VA(p); 	// lib/Model_dAM_VA.cpp
+	else if (strcmp(p->Model, "mCRN") == 0) 		set_het_mod_mCRN(p); 	// lib/Model_mCRN.cpp
+	else if (strcmp(p->Model, "hVM_TT") == 0) set_het_mod_hVM_TT(p); 	// lib/Model_hVM_TT.cpp NEW
 	//else if (strcmp(p->Model, "speciesCELL_MODEL") == 0) set_het_mod_speciesCELL_MODEL(p); 	// lib/Model_speciesCELL_MODEL.cpp NEW
 
 	// Spatial gradient (global as will be geo and type, rather than model, dependent)
@@ -505,6 +527,8 @@ void set_heterogeneity_and_modulation_native(Cell_parameters *p)
 void update_heterogeneity_and_modulation_integrated(Cell_parameters *p)
 {
 	// Only further modifications to above which are different for integrated compared to native
+	if (strcmp(p->Model, "dAM_VA") == 0)            update_het_and_mod_dAM_VA_integrated(p);    // lib/Model_dAM_VA.cpp
+	if (strcmp(p->Model, "mCRN") == 0)            update_het_and_mod_mCRN_integrated(p);    // lib/Model_mCRN.cpp
     //if (strcmp(p->Model, "speciesCELL_MODEL") == 0)	update_het_and_mod_speciesCELL_MODEL_integrated(p);	// lib/Model_speciesCELL_MODEL.cpp
 }
 // End Global selection function ======================================================//|

@@ -1,170 +1,4 @@
-Cell models:
-
-"Model [X]":
-    Model reference:    "minimal"
-    Model:              hybrid-minimal model for integration with physiological Ca2+ currents 
-    File:               lib/Model_minimnal.cpp
-    Reference:          Colman 2019
-    
-    Model reference:    "hAM_CRN"
-    Model:              CRN human atrial cell model
-    File:               lib/Model_hAM_CRN.cpp
-    Reference:          Courtemanche et al. 1998 Am. J. Physiol.-Heart Circ. Physiol. 275, H301–H321
-    
-    Model reference:    "hAM_NG"
-    Model:              Nygren et al human atrial cell model
-    File:               lib/Model_hAM_NG.cpp
-    Reference:          Nygren et al. 1998 Circ. Res. 82, 63–81
-    
-    Model reference:    "hAM_MT"
-    Model:              Maleckar et al human atrial cell model
-    File:               lib/Model_hAM_MT.cpp
-    Reference:          Maleckar et al. 2009 Am. J. Physiol. Heart Circ. Physiol. 297, H1398-1410.
-                            and Nygren et al. 1998 Circ. Res. 82, 63–81
-    
-    Model reference:    "hAM_GB"
-    Model:              Grandi et al. human atrial cell model
-    File:               lib/Model_hAM_GB.cpp
-    Reference:          Grandi et al. 2011 Circ. Res. 109, 1055–1066. 
-                            and Chang et al 2014 PLOS Computational Biology 10 (12): e1004011
-    
-    Model reference:    "hAM_WL_CRN"
-    Model:              Colman et al, Workman-lab human atrial cell model - CRN based
-    File:               lib/Model_hAM_WL.cpp
-    Reference:          Colman et al. 2018 Front. Physiol. 9 1211 
-                            and Courtemanche et al. 1998 Am. J. Physiol.-Heart Circ. Physiol. 275, H301–H321
-    
-    Model reference:    "hAM_WL_GB"
-    Model:              Colman et al, Workman-lab human atrial cell model - GB based
-    File:               lib/Model_hAM_WL.cpp
-    Reference:          Colman et al. 2018 Front. Physiol. 9 1211 
-                            and Grandi et al. 2011 Circ. Res. 109, 1055–1066.
-                            and Chang et al 2014 PLOS Computational Biology 10 (12): e1004011
-    
-    Model reference:    "hAM_{CRN/NG/GB}_mWL""
-    Model:              Colman et al, Workman-lab human atrial currents incorporated into CRN, NG or GB models
-    File:               lib/Model_hAM_WL.cpp
-    Reference:          Colman et al. 2018 Front. Physiol. 9 1211 and 
-                            Courtemanche et al. 1998 Am. J. Physiol.-Heart Circ. Physiol. 275, H301–H321, 
-                            Nygren et al. 1998 Circ. Res. 82, 63–81
-                            Grandi et al. 2011 Circ. Res. 109, 1055–1066 / Chang et al 2014 PLOS Computational Biology 10 (12): e1004011
-    
-    Model reference:    "hVM_ORD_s"
-    Model:              'Hara-Rudy human ventricular cell model, simplified for spatial cell modelling
-    File:               lib/Model_hVM_ORD_simple.cpp
-    Reference:          O’Hara et al. 2011 PLOS Comp. Biol. 7, e1002061 
-                            and Colman 2019
-    
-    Model reference:    "hAM_CAZ_s"
-    Model:              Colman-Aslanidi-Zhang human atria cell model, simplified for spatial cell modelling
-    File:               lib/Model_hAM_CAZ_simple.cpp
-    Reference:          Colman et al. 2013 J. Physiol. 591, 4249–4272 
-                            and Colman 2019
-    
-    Model reference:    "dAM_VA"
-    Model:              Varela-Aslanidi dog atrial cell model
-    File:               lib/Model_dAM_VA.cpp
-    Reference:          Varela et al. 2016 PLOS Comp. Biol. 12, e1005245 
-                            and Ramirez et al. 2000 Am J Physiol Heart Circ Physiol 279(4):H1767-85.
-    
-__________________________________________________________________________________________________
-
-Regional cell models:
-
-"Celltype [X]":
-    Human atrial regional cell models:
-        Implemented regions::   "RA", "PM", "CT", "RAA", "AVR", "BB", "LA", "AS", "LAA", "PV"
-        Can be applied to:      All human atrialc cell models
-        In File/function:       lib/Model.cpp -> set_celltype_hAM()
-        Reference:              Colman et al. 2013 J. Physiol. 591, 4249–427
-
-    "minimal" model:
-        Implemented regions::   "EPI", "M", "ENDO", "RA", "RA_small_mammal"
-        Can be applied to:      minimal model only
-        In File/function:       lib/Model_minimal.cpp -> set_celltype_native_minimal()
-        Reference:              Colman 2019
-
-    "hVM_ORD_s" model:
-        Implemented regions::   "EPI", "M", "ENDO"
-        Can be applied to:      Simplified, integrated ORd model only
-        In File/function:       lib/Model_hVM_ORD_simpleicpp -> set_celltype_native_hVM_ORD_simple()
-        Reference:              O’Hara et al. 2011 PLOS Comp. Biol. 7, e1002061
-                                    and Colman 2019
-    
-    Dog atrial regional cell models:
-        Implemented regions::   "RA", "PM", "CT", "BB", "LA", "PV"
-        Can be applied to:      dAM_VA only (dog atrial model)
-        In File/function:       lib/Model_dAM_VA.cpp -> set_celltype_native_dAM_VA()
-        Reference:              Varela et al. 2016 PLOS Comp. Biol. 12, e1005245
-
-__________________________________________________________________________________________________
-
-Modulation models:
-
-"Remodelling [X]":
-    Modulation reference:   "AF_GB"
-    Description:            chronic atrial fibrillation remodelling, human
-    Can be applied to:      All human atrial cell models
-    In File/function:       lib/Model.c -> set_remodelling_hAM()
-    Reference:              Grandi et al. 2011 Circ. Res. 109, 1055–1066
-    
-    Modulation reference:   "AF_Col_{1-4}"
-    Description:            chronic atrial fibrillation remodelling, human
-    Can be applied to:      All human atrial cell models
-    In File/function:       lib/Model.c -> set_remodelling_hAM()
-    Reference:              Colman et al. 2013 J. Physiol. 591, 4249–427
-    
-    Modulation reference:   "RSERCA_NCX" 
-    Description:            Non-physiological remodelling to promote SR-loading; SERCA up NCX down; loosely represents HF or similar
-    Can be applied to:      All cell models, designed for integrated/spatial implementations 
-    In File/function:       lib/Model.c -> set_global_remodelling() 
-    Reference:              Colman 2019 
-
-    Modulation reference:   "RCRU" 
-    Description:            Non-physiological remodelling to promote whole-cell SCRE; faster inter-CRU coupling
-    Can be applied to:      All cell models, designed for integrated/spatial implementations (has no effect on native!) 
-    In File/function:       lib/Model.c -> set_global_remodelling() 
-    Reference:              Colman 2019 
-
-"ISO_model [X]":
-    Modulation reference:   "GB" 
-    Description:            sympathetic autonomic regulation / isoprenaline in human atrial cells
-    Can be applied to:      All human atrial cell models
-    In File/function:       lib/Model.c -> set_ISO_hAM()
-    Reference:              Grandi et al. 2011 Circ. Res. 109, 1055–1066.
-    
-    Modulation reference:   "Col" 
-    Description:            sympathetic autonomic regulation / isoprenaline in human atrial cells
-    Can be applied to:      All human atrial cell models
-    In File/function:       lib/Model.c -> set_ISO_hAM()
-    Reference:              Colman 2014 pg:115–55. Springer Theses. https://doi.org/10.1007/978-3-319-01643-6_5.
-    
-    Modulation reference:   "Toy_methods_demonstration" 
-    Description:            sympathetic autonomic regulation / isoprenaline; non-biophysically detailed, representatve model.
-    Can be applied to:      minimal, hAM_CAZ_s, hAM_ORD_s
-    In File/function:       lib/Model_minimal.cpp -> set_modulation_ISO_native_minimal()
-                            lib/Model_hAM_CAZ_simple.cpp -> set_modulation_ISO_native_hAM_CAZ_simple()
-                            lib/Model_hVM_ORD_simple.cpp -> set_modulation_ISO_native_hVM_ORD_simple()
-    Reference:              Colman 2019
-
-"Mutation [X]":
-    Modulation reference:   "D322H", "Y155C" 
-    Description:            mutations to IKur, human atria
-    Can be applied to:      All human atrial cell models
-    In File/function:       lib/Model.c -> set_mutation_hAM()
-    Reference:              Colman et al. 2017 PLOS Comp Biol 13(6):e1005587
-    
-"Agent [X]":
-    Modulation reference:   "MC-II-157c" 
-    Description:            hERG activator compound
-    Can be applied to:      All models (which have IKr)
-    In File/function:       lib/Model.cpp -> set_global_Agents()
-    Reference:              Colman et al. 2017 Front. Physiol 8 and Guo et al. 2014 PLOS One 9, e105553
-        
-__________________________________________________________________________________________________
-
 Idelaised tissue models:
-(All idealised models need only cite the main paper, Colman 2019).
 
 "Tissue_order [1D/2D/3D] Tissue_model [X]":
 
@@ -179,7 +13,9 @@ Idelaised tissue models:
             Multiple_models     [Off/On]                    def:Off
             Tissue_model_2      [any model]                 def:hAM_CRN
             Modulation maps     [Off/On]                    def:Off
-    
+
+    __________
+
     • Tissue model reference: "basic"
         Description:            basic tissue model, with limited settings/options
 
@@ -190,6 +26,9 @@ Idelaised tissue models:
             D_uniformtiy        [uniform only]
             Multiple_models     [Off only]
             Modulation maps     [Off/On]                    def:Off
+
+    __________
+
 
     • Tissue model reference: "conduction_velocity"
         Description:            sheet or 3D cube for calculating conduction velocity, long and transverse relative to fibres
@@ -210,6 +49,9 @@ Idelaised tissue models:
             By default, dx = 0.25 mm, D1 = 0.2 mm/ms, D_AR = 4 (D2 = D1/D_AR) - any of these can be set directly using the arguments "dx", "D1", "D_AR"
             Produces an additional output: "Outputs_X/Conduction_velocity_log.dat" which contains information including tissue order, D1, D2, dx, OX, OY, OZ and CV in all directions
 
+    __________
+
+
     • Tissue model reference: "re-entry"
         Description:            sheet or 3D slab set up for re-entry
 
@@ -226,6 +68,9 @@ Idelaised tissue models:
             By default, dx = 0.25 mm, D1 = 0.2 mm/ms, D_AR = 4 (D2 = D1/D_AR) - any of these can be set directly using the arguments "dx", "D1", "D_AR"
             S2 stimulus shape is defaulted to "cross_field" to induce re-entry using S1S2 pacing
 
+    __________
+
+
     • Tissue model reference: "Vent_transmural"
         Description:        segmented strand, slice or 3D sheet simulating transmural human ventricular electrophysiology
 
@@ -240,6 +85,9 @@ Idelaised tissue models:
         Additional notes:
             Suitable only for ventricular models which have ENDO/M/EPI cell heterogeneity included
             Simple 1:1:1 ratio of cells. You can adjust this segmentation/create a new model to adjust if you like.
+
+    __________
+
 
     • Tissue model reference: "Heterogeneous_human_atria"
         Description:        idealised fully segmented strand/slice/3D_slab with all regions of human atria imeplemented
@@ -288,6 +136,9 @@ Anatomically detailed tissue models:
 
             Phase-map files:
                 functional_model_test_phasemap.dat
+
+    __________
+
                 
     • Tissue model reference: "Human_vent_wedge"
         Description:            Reconstruction of a wedge of the human left ventricle.
@@ -302,6 +153,9 @@ Anatomically detailed tissue models:
     
         Stimulus map files:
             Human_vent_wedge_stim.dat
+
+    __________
+
         
     • Tissue model reference: "Canine_vent"
         Description:            Reconstruction of the whole canine ventricle.
@@ -317,10 +171,37 @@ Anatomically detailed tissue models:
 
         Stimulus map files:
             Canine_vent_multi_stim.dat
+
+    __________
+
     
+    • Tissue model reference: "Canine_atria_VA_control" and "Canine_atria_VA_remod"
+        Description:            Reconstruction of the whole canine atria.
+        Reference:              Varela et al. 2016 PLOS Comp. Biol. 12, e100524
+                                Colman et al. 2024 Journal of Physiology XXXXX ADD
+
+        Funcrtionality/available options:
+            Tissue_type         [homogeneous/heterogeneous] def:heterogeneous  Het is RA, LA, BB-CT, PV (default cell model is dAM_VA 
+            Orientation_type    [isotropic/anisotropic] 
+            D_uniformity        [uniform/regional] - regional is default
+            Multiple_models     [Off]
+            Modulation_maps     [Off/On]    
+            Multi_stimulus      [Off/On]
+
+        Stimulus map files:
+            Canine_vent_multi_stim.dat
+
+        Modulation map files:
+            Canine_atria_fibrosis_1_map.dat - identifies where fibrosis is
+            Canine_atria_VA_control_Junction_discrete_map_0.200000_0.800000.dat - loss of cellular connections applied only to fibrosis map region
+
+
+    __________
+
+
     • Tissue model reference: "Vector_field_and_fibrosis_2D_sims"
         Description:            2D sheet with varying orientation field, used in network model simulations
-        Reference:              Colmand and Benson 2023 (Under review + Biorxiv)
+        Reference:              Colman, M.A., Benson, A.P. Sci Rep 13, 15119 (2023). https://doi.org/10.1038/s41598-023-39244-w
 
         Funcrtionality/available options:
             Tissue_type         [homogeneous] 
@@ -330,12 +211,18 @@ Anatomically detailed tissue models:
             Modulation_maps     [Off/On]    
             Multi_stimulus      [Off/On] 
 
+        Stimulus map files:
+            Canine_vent_multi_stim.dat
+
         Modulation map files:
             Fibrosis_geometry_200_200_1_junction_map_0.2_0.8.dat etc - 20% axial and 80% transverse removed
 
-      • Tissue model reference: "2D_human_atria_fibrosis_300x300_OY"
+    __________
+
+
+    • Tissue model reference: "2D_human_atria_fibrosis_300x300_OY"
         Description:            2D sheet with varying orientation field, used in network model simulations
-        Reference:              Colman et al (Sharma, Aslanidi, Zhao) 2023 (Under review)
+        Reference:              Colman MA, Sharma R, Aslanidi OV, Zhao J. Interface Focus. 2023 Dec 15;13(6):20230041. doi: 10.1098/rsfs.2023.0041
 
         Funcrtionality/available options:
             Tissue_type         [homogeneous]
@@ -346,14 +233,17 @@ Anatomically detailed tissue models:
             Multi_stimulus      [Off/On]
 
         Modulation map files:
-            Fibrosis maps: 
+            Fibrosis maps:
                 2D_human_atria_fibrosis_map_ln_{10/25/37/50}_perc_{25/50}.txt
             Network model junction maps:
                 2D_human_atria_fibrosis_300x300_OY_JNmap_{10/25/37/50}_{25/50}.txt
 
+    __________
+
+
     • Tissue model reference: "2D_human_atria_fibrosis_300x300_field_control"
         Description:            2D sheet with varying orientation field, used in network model simulations
-        Reference:              Colman et al (Sharma, Aslanidi, Zhao) 2023 (Under review)
+        Reference:              Colman MA, Sharma R, Aslanidi OV, Zhao J. Interface Focus. 2023 Dec 15;13(6):20230041. doi: 10.1098/rsfs.2023.0041
 
         Funcrtionality/available options:
             Tissue_type         [homogeneous]
@@ -368,10 +258,13 @@ Anatomically detailed tissue models:
                 2D_human_atria_fibrosis_map_ln_{10/25/37/50}_perc_{25/50}.txt
             Network model junction maps:
                 2D_human_atria_fibrosis_300x300_field_control_JNmap_{10/25/37/50}_{25/50}.txt
-    
+
+    __________
+
+
     • Tissue model reference: "2D_human_atria_fibrosis_300x300_field_remodelled"
         Description:            2D sheet with varying orientation field, used in network model simulations
-        Reference:              Colman et al (Sharma, Aslanidi, Zhao) 2023 (Under review)
+        Reference:              Colman MA, Sharma R, Aslanidi OV, Zhao J. Interface Focus. 2023 Dec 15;13(6):20230041. doi: 10.1098/rsfs.2023.0041
 
         Funcrtionality/available options:
             Tissue_type         [homogeneous]
@@ -387,4 +280,52 @@ Anatomically detailed tissue models:
             Network model junction maps:
                 2D_human_atria_fibrosis_300x300_field_remodelled_JNmap_{10/25/37/50}_{25/50}.txt
 
+    __________
 
+
+     • Tissue model reference: "Human_atria_AKL_heart_1" or "Human_atria_AKL_heart_2" or "Human_atria_AKL_heart_3" or
+                              "Human_atria_AKL_heart_1_cleaned" or "Human_atria_AKL_heart_2_cleaned"  or
+                              "Human_atria_AKL_heart_1_corrected" or "Human_atria_AKL_heart_2_corrected" or ""Human_atria_AKL_heart_3_corrected"
+
+
+        Description:            Bi-atrial human models from three subjects, with two being cleaned to remove losely connected nodes etc
+                                "corrected" refers to models which have been mirrored to correct for the incorrect mirroring in original data. Connection maps not produced for these versions, which
+                                    is why the original versions and the connection maps have been kept in also, for reproducibility. Use corrected unless you want those specific connection maps
+
+
+        Reference:              Sharma R, Lo A, Xiong Z, Zhuang X, Kennelly J, Kulathilaka A, Nuñez-Garcia M, Fedorov VV, Stiles MK, Trew ML, Bradley CP & Zhao J (2023).
+                                Computerized Analysis of the Human Heart to Guide Targeted Treatment of Atrial Fibrillation. In Statistical Atlases and Computational Models of the Heart.
+                                Regular and CMRxMotion Challenge Papers: 13th International Workshop, STACOM 2022, Held in Conjunction with MICCAI 2022, Singapore, September 18, 2022,
+                                Revised Selected Papers, pp. 317–329. Springer-Verlag, Berlin, Heidelberg. Available at: https://doi.org/10.1007/978-3-031-23443-9_29
+
+                                Colman MA, Sharma R, Aslanidi OV, Zhao J. Interface Focus. 2023 Dec 15;13(6):20230041. doi: 10.1098/rsfs.2023.0041
+
+
+        Funcrtionality/available options:
+            Tissue_type         [homogeneous/heterogeneous] def:heterogeneous  Het is RA, LA, AS
+            Orientation_type    [isotropic/anisotropic]
+            D_uniformity        [uniform only]
+            Multiple_models     [Off]
+            Modulation_maps     [Off/On] -> fibrosis and connection maps available
+            Multi_stimulus      [Off/On]
+
+        Stimulus map files:     coords defined in code
+
+        Fibrosis map files (1 for fib, 0 for non-fib):
+            Human_atria_AKL_heart_1_fibrosis_map.dat, Human_atria_AKL_heart_2_fibrosis_map.dat, Human_atria_AKL_heart_2_fibrosis_map.dat
+            (Same maps used for cleaned geos)
+
+        Connection map files (produced by removing connections within fibrosis regions; if inter-cellular connection is the only desired impact of fibrosis, then only these
+            maps need to be run (the fibrosis map has already defined the regions of these maps that have connections removed); if there are other components (e.g., remodelling, change to D),
+            then run both mpa files, with the fibrosis map controlling everything else
+                Human_atria_AKL_heart_1_Junction_discrete_map_0.200000_0.800000.dat
+                Human_atria_AKL_heart_1_Junction_discrete_map_0.200000_0.900000.dat
+                Human_atria_AKL_heart_1_Junction_discrete_map_0.500000_0.900000.dat
+                Human_atria_AKL_heart_1_cleaned_Junction_discrete_map_0.200000_0.800000.dat
+                Human_atria_AKL_heart_1_cleaned_Junction_discrete_map_0.500000_0.800000.dat
+
+                Human_atria_AKL_heart_2_Junction_discrete_map_0.200000_0.800000.dat
+                Human_atria_AKL_heart_2_Junction_discrete_map_0.200000_0.900000.dat
+                Human_atria_AKL_heart_2_Junction_discrete_map_0.500000_0.900000.dat
+                Human_atria_AKL_heart_2_cleaned_Junction_discrete_map_0.200000_0.800000.dat
+                Human_atria_AKL_heart_2_cleaned_Junction_discrete_map_0.500000_0.800000.dat

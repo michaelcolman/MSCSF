@@ -1636,145 +1636,294 @@ void set_tissue_settings_anatomical(Cell_parameters p, Tissue_parameters *t)
     }
     // End Rat bi-ventricular geo 2 ===================================================//|
 
-    // Human whole heart Halina Auckland ==============================================\\|
-    if (strcmp(t->Tissue_model, "Human_whole_heart_1_test") == 0 || strcmp(t->Tissue_model, "Human_whole_heart_1_geo_vis") == 0 || strcmp(t->Tissue_model, "Human_whole_heart_MI") == 0)
+    // Whole canine atria =============================================================\\|
+    // Canine atrial reconstruction from Varela et al. 2016 PLOS Comp. Biol. 12, e1005245
+    if (strcmp(t->Tissue_model, "Canine_atria_VA_control") == 0 || strcmp(t->Tissue_model, "Canine_atria_VA_remod") == 0)
+    {
+        // space step and global/baseline diffusion coefficient
+        t->Tissue_settings_set = true; // now the code knows the settings have been found
+
+        // Control values:
+        t->dx = t->dy = t->dz = 0.3;    // mm | can be overwritten by argument "dx [x]", but only for dx=dy=dz
+        t->D1   = 0.4;                  // mm^2/ms | can be overwritten by argument "D1 [x]" and modulated by argument "Dscale [x]"
+        t->D_AR = 10;                   // anisotropy ratio (D1/D2) | can be overwrriten by argument "D_AR [x]" and modulated by "D_AR_scale [x]"
+        t->Diso = 0.25;//0.3;           // mm^2/ms | can be overwritten by argument "D1 [x]" (if anisotropy = isotropic) and modulated by "Dscale [x]"
+        t->Gl   = t->D1/t->dx;          // nS/pF; conversion from D to g; NETWORK model
+        t->Gt   = t->Gl/t->D_AR;        // nS/p
+
+        // Network model symmetry factors
+        t->symm_fac_diag_long       = 0.86;
+        t->symm_fac_diag_trans      = 1.0;
+        t->symm_fac_corner          = 1.0;
+        t->apply_symmetry_factor    = "On";
+
+        // Remodelled values:
+        if (strcmp(t->Tissue_model, "Canine_atria_VA_remod") == 0)
+        {
+            t->D1   = 0.2;
+            t->Diso = 0.1;
+            // D_AR still 10
+            // No remodelling values for Gl and Gt as the argument is the loss of those is what slows CV, not reduced individual coupling
+        }
+
+        // Dimensions | cannot be overwritten
+        t->NX       = 182;
+        t->NY       = 110;
+        t->NZ       = 186;
+
+        // Default cell model
+        t->Default_model    = "dAM_VA"; // Varela et al. 2016 PLOS Comp. Biol. 12, e1005245 canine atrial cell model
+
+        // Files
+        t->geo_file     = "Canine_atria_VA_geo.dat";  // cannot be overwritten
+
+        //PV stim file (default is set to coords for SAN, but this allows no need for file argument if setting stim type to file
+        t->stim_file    = "Canine_atria_VA_PV_stim.dat";
+
+        // Stimulus, coords:
+        // S1 coords site; SAN
+        t->S1_loc_type  = "coords";
+        t->S1_x_size    = 5;
+        t->S1_x_loc     = 58;
+        t->S1_y_loc     = 55;
+        t->S1_y_size    = 15;
+        t->S1_z_loc     = 139;
+        t->S1_z_size    = 5;
+
+        // S2 coordinates for cross-field
+        t->S2_loc_type  = "coords";
+        t->S2_y_loc     = int(float(t->NX/2.0));    // half of x, all of y and z
+        t->S2_y_size    = int(float(t->NX/2.0));
+        t->S2_x_loc     = int(float(t->NY/4.0));    // centre in x
+        t->S2_x_size    = int(float(t->NY/4.0));    // NY/2 + NY/2 + 1 >= NY
+        t->S2_z_loc     = int(float(t->NZ/2.0));    // centre in z
+        t->S2_z_size    = int(float(t->NZ/2.0));
+
+        // Heterogeneity ================================\\|
+        t->Tissue_type          = "heterogeneous";
+        // Celltypes
+        // These must correspond with your geoemtry file;
+        // non-tissue should be denoted with a 0
+        // tissue should be denoted sequentially from 1 for the number of celltypes required
+        // then set which celltype stirng reference corresponds to that number in the geoemtry file
+        t->Ncelltypes         = 4;
+        t->celltype_number[1] = "RA";
+        //t->celltype_number[2] = "PM";
+        t->celltype_number[2] = "LA";
+        t->celltype_number[3] = "BB";
+        t->celltype_number[4] = "PV";
+        // End heterogeneity ============================//|
+
+        // Anisotropy ===================================\\|
+        t->Orientation_type         = "anisotropic";
+        t->orientation_file_root    = "Canine_atria_VA"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        t->orientation_file_type    = "orientation";
+        // End anisotropy ===============================//|
+
+              // Non-uniform diffusion coefficient ============\\|
+        // 1 - Non-uniformity applied by celltpye
+        // Heterogeneity settings (Ncelltypes, celltype_number[x]) must be set to apply this functionality
+        // Note: you can still apply homogeneous electrophysiology by setting Tissue_type to homogeneous here
+        //t->D_uniformity         = "regional";
+        t->D_uniformity     = "uniform";  // for simplicity, set default to unifrom. Can be overwritten, of course
+
+        // Celltype dependant D and anisotropy ratio - must have settings for Ncelltypes
+        // These will apply the scale factor to D1 and D_AR as set globally above
+        t->non_uniform_D1_scale[1]          = 1.0; // RA
+        t->non_uniform_AR_scale[1]          = 1.0; // RA D_AR = 10
+        //t->non_uniform_D1_scale[2]          = 1.0; // PM
+        //t->non_uniform_AR_scale[2]          = 1.6; // PM D_AR = 16 = 1.6*10
+        t->non_uniform_D1_scale[3]          = 1.5; // BB
+        t->non_uniform_AR_scale[3]          = 1.6; // BB D_AR = 16
+        t->non_uniform_D1_scale[2]          = 1.0; // LA
+        t->non_uniform_AR_scale[2]          = 1.0; // LA D_AR = 10
+        t->non_uniform_D1_scale[4]          = 1.0; // PV
+        t->non_uniform_AR_scale[4]          = 1.6; // PV D_AR = 16
+
+        // Remodelled values:
+        if (strcmp(t->Tissue_model, "Canine_atria_VA_remod") == 0)
+        {
+            t->non_uniform_D1_scale[3]      = 2.0; // BB
+        }
+        // End Non-uniform diffusion coefficient ========//|
+
+        // Disconnect regions ===========================\\|
+        t->disconnect_regions_flag         = true;
+        t->Ndisconnected_regions           = 1; // N region junctions really, as it is N pairs of regions to disconnect
+
+        // region pair one (disconnect RA and PV so that where the geo walls touch, they are not electrically coupled)
+        t->disconnect_regions[0][0]        = 1; // RA
+        t->disconnect_regions[0][1]        = 4; // PV
+        // End disconnect regions =======================//|
+    }
+    // End whole canine atria =========================================================//|
+
+    // Human atrial geometries Auckland ===============================================\\|
+    // Geometries from: Sharma R et al. 2023.  Regular and CMRxMotion Challenge Papers: 
+    // 13th International Workshop, STACOM 2022, Held in Conjunction with MICCAI 2022, Singapore, September 18, 2022, 
+    // Revised Selected Papers, pp. 317–329. Springer-Verlag, Berlin, Heidelberg. Available at: https://doi.org/10.1007/978-3-031-23443-9_29
+    // Implementation, including reflected and cleaned geometries and all connection maps, from: Colman, Sharma, Aslanidi and Zhao Interface Focus 2023 (In press). doi: 10.1098/rsfs.2023.0041
+    if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0 || (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2") == 0) || (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3") == 0)  
+            || strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0 || strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0
+            || strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0  || strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0 || strcmp(t->Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0 )
     {
         t->Tissue_settings_set = true; // now the code knows the settings have been found
 
         // space step and global/baseline diffusion coefficient
         // Control values:
-        //t->dx = t->dy = t->dz = 0.219; // mm | can be overwritten by argument "dx [x]", but only for dx=dy=dz
-        //t->dx = t->dy = t->dz = 0.365; // mm | can be overwritten by argument "dx [x]", but only for dx=dy=dz
-        t->dx = t->dy = t->dz = 0.292; // mm | can be overwritten by argument "dx [x]", but only for dx=dy=dz
+        t->dx = t->dy = t->dz = 0.3125; // mm | can be overwritten by argument "dx [x]", but only for dx=dy=dz
         t->D1   = 1;                  // mm^2/ms | can be overwritten by argument "D1 [x]" and modulated by argument "Dscale [x]"
         t->D_AR = 10;                   // anisotropy ratio (D1/D2) | can be overwrriten by argument "D_AR [x]" and modulated by "D_AR_scale [x]"
         t->Diso = 0.3;                  // mm^2/ms | can be overwritten by argument "D1 [x]" (if anisotropy = isotropic) and modulated by "Dscale [x]"
         t->Gl   = t->D1/t->dx;          // nS/pF; conversion from D to g; NETWORK model
         t->Gt   = t->Gl/t->D_AR;        // nS/p
 
-        // um 219 dimensions
-        /*t->NX       = 558
-          t->NY       = 471;
-          t->NZ       = 350;*/
+        // Network model symmetry factors
+        //t->symm_fac_diag_long       = 0.86;
+        //t->symm_fac_diag_trans      = 1.0;
+        //t->symm_fac_corner          = 1.0;
+        //t->apply_symmetry_factor    = "On";
 
-        // um 365 dimensions
-        //t->NX       = 335;
-        //t/->NY       = 283;
-        //t->NZ       = 210;
-
-        // um 292 dimensions
-        t->NX       = 419;
-        t->NY       = 353;
-        t->NZ       = 263;
-
-        if (strcmp(t->Tissue_model, "Human_whole_heart_MI") == 0)
+        // Dimensions | cannot be overwritten
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0 || strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0
+                || strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0 )
         {
-            t->NX       = 251;
-            t->NY       = 311;
-            t->NZ       = 374;
+            t->NX       = 262;
+            t->NY       = 312;
+            t->NZ       = 326;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2") == 0 || strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0
+                || strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0 )
+        {
+            t->NX       = 356;
+            t->NY       = 396;
+            t->NZ       = 286;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3") == 0 
+                || strcmp(t->Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0 )
+        {
+            t->NX       = 244;
+            t->NY       = 308;
+            t->NZ       = 342;
         }
 
         // Default cell model
-        t->Default_model    = "minimal";
+        t->Default_model    = "hAM_CRN";
 
         // Files
-        t->geo_file     = "Human_whole_heart_control_292um.txt";//"AVN_Bundle_Branches_only.txt";
-        t->stim_file    = "Human_whole_heart_control_292um_SAN_stim.txt";
-        if (strcmp(t->Tissue_model, "Human_whole_heart_1_geo_vis") == 0) t->geo_file = "Human_whole_heart_control_292um_VIS_geo.txt";
-        if (strcmp(t->Tissue_model, "Human_whole_heart_MI") == 0) t->geo_file = "Human_whole_heart_MI.txt";
-        if (strcmp(t->Tissue_model, "Human_whole_heart_MI") == 0) t->stim_file = "Human_whole_heart_MI_SAN_stim.txt";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0) t->geo_file = "Human_atria_AKL_heart_1_geo_seg_AS.dat";  // cannot be overwritten
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2") == 0) t->geo_file = "Human_atria_AKL_heart_2_geo_seg_AS.dat";  // cannot be overwritten
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3") == 0) t->geo_file = "Human_atria_AKL_heart_3_geo_seg_AS.dat";  // cannot be overwritten
+        
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0) t->geo_file = "Human_atria_AKL_heart_1_geo_seg_cleaned.dat";  // cannot be overwritten
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0) t->geo_file = "Human_atria_AKL_heart_2_geo_seg_cleaned.dat";  // cannot be overwritten
+    
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0) t->geo_file = "Human_atria_AKL_heart_1_geo_seg_cleaned_reflected.dat";  // cannot be overwritten
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0) t->geo_file = "Human_atria_AKL_heart_2_geo_seg_cleaned_reflected.dat";  // cannot be overwritten
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0) t->geo_file = "Human_atria_AKL_heart_3_geo_seg_reflected.dat";  // cannot be overwritten
 
-        t->Orientation_type         = "isotropic";
-        //t->Tissue_type              = "homogeneous";
+        // Stimulus, coords:
+        // S1 coords site
+        t->S1_loc_type  = "coords";
+        t->S1_shape     = "sphere";
+
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0 || strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0) // approximate SAN stimulus site
+        {
+            t->S1_x_size    = 10; // radius of sphere to be stimulus region
+            t->S1_x_loc     = 135;
+            t->S1_y_loc     = 45;
+            t->S1_z_loc     = 205;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2") == 0 || strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0) // approximate SAN stimulus site
+        {
+            t->S1_x_size    = 10;
+            t->S1_x_loc     = 177;
+            t->S1_y_loc     = 33;
+            t->S1_z_loc     = 137;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3") == 0) // approximate SAN stimulus site
+        {
+            t->S1_x_size    = 10;
+            t->S1_x_loc     = 115;
+            t->S1_y_loc     = 40;
+            t->S1_z_loc     = 265;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0)
+        {
+            t->S1_x_size    = 10; // radius of sphere to be stimulus region
+            t->S1_x_loc     = t->NX-1-135;
+            t->S1_y_loc     = 45;
+            t->S1_z_loc     = 205;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0)
+        {
+            t->S1_x_size    = 10;
+            t->S1_x_loc     = t->NX-1-177;
+            t->S1_y_loc     = 33;
+            t->S1_z_loc     = 137;
+        }
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0)
+        {
+            t->S1_x_size    = 10;
+            t->S1_x_loc     = t->NX-1-115;
+            t->S1_y_loc     = 40;
+            t->S1_z_loc     = 265;
+        }
+
         // Heterogeneity ================================\\|
         t->Tissue_type          = "heterogeneous";
-        t->Ncelltypes           = 10;
-        t->celltype_number[1]   = "Pace_CCS"; // SAN, non-coupled
-        t->celltype_number[2]   = "Pace_CCS"; // SAN, coupled to atria
-        t->celltype_number[3]   = "RA_CCS"; // AM
-        t->celltype_number[4]   = "Pace_CCS"; // AVN, non coupled
-        t->celltype_number[5]   = "Pace_CCS"; // AVN, coupled
-        t->celltype_number[6]   = "PK_CCS"; // RPK, non coupled
-        t->celltype_number[7]   = "PK_CCS"; // RPK, coupled
-        t->celltype_number[8]   = "PK_CCS"; // LPK, non coupled
-        t->celltype_number[9]   = "PK_CCS"; // LPK, coupled
-        t->celltype_number[10]  = "EPI_CCS"; // VM
+        t->Ncelltypes           = 3;
+        t->celltype_number[1]   = "RA";// region is "RA";
+        t->celltype_number[2]   = "LA";// region is "LA";
+        t->celltype_number[3]   = "AS";// region is "AS";
         // End Heterogeneity ============================//|
 
+        // Anisotropy ===================================\\|
+        t->Orientation_type         = "anisotropic";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_1"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_2"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_3"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_1"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_2"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_1_reflected"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_2_reflected"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0) t->orientation_file_root    = "Human_atria_AKL_heart_3_reflected"; // cannot be overwritten by arguments. Filnames are {root}_suffix.dat
+       
+        t->orientation_file_type    = "orientation"; // gives suffix
+        // End anisotropy ===============================//|
+
+        // Map files ====================================\\|
+        // default firosis map files
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_1_fibrosis_map.dat";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_2_fibrosis_map.dat";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_3_fibrosis_map.dat";
+        
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_cleaned") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_1_fibrosis_map.dat";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_cleaned") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_2_fibrosis_map.dat";
+
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1_corrected") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_1_fibrosis_map_reflected.dat";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_2_corrected") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_2_fibrosis_map_reflected.dat";
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_3_corrected") == 0) t->Dscale_mod_map_file  = "Human_atria_AKL_heart_3_fibrosis_map_reflected.dat";
+
+        if (strcmp(t->Tissue_model, "Human_atria_AKL_heart_1") == 0) t->junction_mod_map_file   = "Human_atria_AKL_heart_1_Junction_discrete_map_0.200000_0.800000.dat";
+        // End Map files ================================//|
+        
         // Disconnect regions ===========================\\|
+        // To prevent where RA and LA physically touch but should not be coupled 
+        //      -> AS represents all valid connections between RA and LA, so they can be completely decoupled
+        //      from each other
         t->disconnect_regions_flag         = true;
-        t->Ndisconnected_regions           = 9; // region junctions really, as it is N pairs of regions to disconnect
+        t->Ndisconnected_regions           = 1; // region junctions really, as it is N pairs of regions to disconnect
 
-        // region pair one (disconnect 3 and 10, atria and ventricles)
-        t->disconnect_regions[0][0]        = 3;
-        t->disconnect_regions[0][1]        = 10;
-        
-        // region pair two (disconnect 5 and 10, AVN and ventricles)
-        t->disconnect_regions[1][0]        = 5;
-        t->disconnect_regions[1][1]        = 10;
-        
-        // region pair three (disconnect 1 and 3, SAN non couple and AM)
-        t->disconnect_regions[2][0]        = 1;
-        t->disconnect_regions[2][1]        = 3;
-
-        // region pair four (disconnect 6 and 10, RPK non couple and VM)
-        t->disconnect_regions[3][0]        = 6;
-        t->disconnect_regions[3][1]        = 10;
-        
-        // region pair five (disconnect 7 and 10, LPK non couple and VM)
-        t->disconnect_regions[4][0]        = 7;
-        t->disconnect_regions[4][1]        = 10;
-        
-        // region pair four (disconnect 6 and 10, RPK non couple and AM)
-        t->disconnect_regions[5][0]        = 6;
-        t->disconnect_regions[5][1]        = 3;
-        
-        // region pair five (disconnect 7 and 10, LPK non couple and AM)
-        t->disconnect_regions[6][0]        = 7;
-        t->disconnect_regions[6][1]        = 3;
-        
-        // region pair four (disconnect 6 and 10, RPK couple and AM)
-        t->disconnect_regions[7][0]        = 8;
-        t->disconnect_regions[7][1]        = 3;
-        
-        // region pair five (disconnect 7 and 10, LPK couple and AM)
-        t->disconnect_regions[8][0]        = 9;
-        t->disconnect_regions[8][1]        = 3;
+        // region pair one (disconnect 1 and 2 which is RA and LA)
+        t->disconnect_regions[0][0]        = 1;
+        t->disconnect_regions[0][1]        = 2;
         // End disconnect regions =======================//|
 
-        // 1 - Non-uniformity applied by celltpye
-        // Heterogeneity settings (Ncelltypes, celltype_number[x]) must be set to apply this functionality
-        // Note: you can still apply homogeneous electrophysiology by setting Tissue_type to homogeneous here
-        t->D_uniformity         = "regional";
-        //t->D_uniformity         = "uniform";
-
-
-        // Celltype dependant D and anisotropy ratio - must have settings for Ncelltypes
-        // These will apply the scale factor to D1 and D_AR as set globally above
-        t->non_uniform_D1_scale[1]          = 0.33;     // SAN 
-        t->non_uniform_AR_scale[1]          = 1.0;      // SAN
-        t->non_uniform_D1_scale[2]          = 0.33;     // SAN 
-        t->non_uniform_AR_scale[2]          = 1.0;      // SAN
-        t->non_uniform_D1_scale[3]          = 1.0;      // AM
-        t->non_uniform_AR_scale[3]          = 1.0;      // AM
-        t->non_uniform_D1_scale[4]          = 0.33;     // AVN
-        t->non_uniform_AR_scale[4]          = 1.0;      // AVN
-        t->non_uniform_D1_scale[5]          = 0.33;     // AVN
-        t->non_uniform_AR_scale[5]          = 1.0;      // AVN
-        t->non_uniform_D1_scale[6]          = 1.0;      // PK
-        t->non_uniform_AR_scale[6]          = 1.0;      // PK
-        t->non_uniform_D1_scale[7]          = 1.0;      // PK
-        t->non_uniform_AR_scale[7]          = 1.0;      // PK
-        t->non_uniform_D1_scale[8]          = 1.0;      // PK
-        t->non_uniform_AR_scale[8]          = 1.0;      // PK
-        t->non_uniform_D1_scale[9]          = 1.0;      // PK
-        t->non_uniform_AR_scale[9]          = 1.0;      // PK
-        t->non_uniform_D1_scale[10]         = 1.0;      // VM
-        t->non_uniform_AR_scale[10]         = 1.0;      // VM
-
-        // CT, BB and PM regions want D1 scale 2 (0.3 -> 0.6)
     }
-    // End human whole heart Halina Auckland ==========================================//|
+    // end human atrial geometries Auckland ===========================================//|
 
     if (t->Tissue_settings_set == false)
     {

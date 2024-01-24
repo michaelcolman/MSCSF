@@ -5,15 +5,16 @@
 // With implementation of multiple, published cell models =  //
 // as well as novel models developed in my lab. ===========  //
 // ========================================================  //
-// This file: Implementation of the dog atrial myocyte ====  //
-// model by Varela-Aslanidi: Varela et al. 2016 PLOS Comp.=  //
-// Biol. 12, e1005245. ====================================  //
-// Based on the model: Ramirez et al. 2000 Am J Physiol ===  //
-// Heart Circ Physiol 279(4):H1767-85. ====================  //
-// In-code identifier: dAM_VA =============================  //
+// This file: Modified ver. of the human atrial cell model=  //
+// by Courtemanche, Ramirez and Nattel:  M. Courtemanche, =  //
+// R.J. Ramirez and S. Nattel. Am J Physiol 1998; =========  //
+// 275(1 Pt 2):H301-21. ===================================  //
+// In-code identifier: mCRN ===============================  //
+// Presented in Colman et al. 2023 Interface Focus=========  // 
+// (In press). doi: 10.1098/rsfs.2023.0041=================  //
 // ========================================================  //
 // GNU 3 LICENSE TEXT =====================================  //
-// COPYRIGHT (C) 2016-2019 MICHAEL A. COLMAN ==============  //
+// COPYRIGHT (C) 2016-2023 MICHAEL A. COLMAN ==============  //
 // THIS PROGRAM IS FREE SOFTWARE: YOU CAN REDISTRIBUTE IT =  //
 // AND/OR MODIFY IT UNDER THE TERMS OF THE GNU GENERAL ====  //
 // PUBLIC LICENSE AS PUBLISHED BY THE FREE SOFTWARE =======  //
@@ -75,7 +76,7 @@
 // Parameters and specific settings =============================================================\\|
 // Set model dependent parameters 
 // If your model does not inheret from a cell model already included, define all parameters:
-void set_parameters_native_dAM_VA(Cell_parameters *p)
+void set_parameters_native_mCRN(Cell_parameters *p)
 {
 	// Capacitance and cell structure
 	p->Cm		= 100;		        // pF
@@ -140,7 +141,7 @@ void set_parameters_native_dAM_VA(Cell_parameters *p)
 	p->ISO_model        = "Toy_CaSR_load";
 }
 
-void update_parameters_integrated_dAM_VA(Cell_parameters *p)
+void update_parameters_integrated_mCRN(Cell_parameters *p)
 {
 	// All of these are involved in the Ca handling model
 	p->LTCC_Ca_bar  		= 1.0;
@@ -150,11 +151,11 @@ void update_parameters_integrated_dAM_VA(Cell_parameters *p)
 	p->INCX_bar             = 0.45*0.9*0.3726;   // (um^3.uM.ms^-1)
 	p->ICab_bar             = 0.4*0.6*1.8237*1e-5; // (um^3 . uM . ms^-1)
 	p->ICaP_bar             = 0.4*0.9*0.137*1e-2;   // (um^3 . uM . ms^-1)
-	p->NLTCC_mean           = 12;               // Number of LTCCs per dyad 
+	p->NLTCC_mean           = 2*12;               // Number of LTCCs per dyad 
 }
 
 // Initial conditions
-void initial_conditions_native_dAM_VA(State_variables *s, Cell_parameters p)
+void initial_conditions_native_mCRN(State_variables *s, Cell_parameters p)
 {
 	// Define ICs for ALL state variables used in the model
 	s->Vm      		= -85;
@@ -194,23 +195,23 @@ void initial_conditions_native_dAM_VA(State_variables *s, Cell_parameters p)
 
 // Heterogeneity and modulation =================================================================\\|
 // Parent function
-void set_het_mod_dAM_VA(Cell_parameters *p)
+void set_het_mod_mCRN(Cell_parameters *p)
 {
-	if (                                       p->Het_set_ref == 0)         set_celltype_native_dAM_VA(p);
-	if (p->ISO > 0.0                        && p->ISO_set_ref == 0)         set_modulation_ISO_native_dAM_VA(p);
-	if (strcmp(p->Agent, "none") != 0       && p->Agent_set_ref == 0)       set_modulation_Agent_native_dAM_VA(p);
-	if (strcmp(p->Remodelling, "none") != 0 && p->Remodelling_set_ref == 0) set_modulation_Remodelling_native_dAM_VA(p);
-	if (strcmp(p->Mutation, "none") != 0    && p->Mutation_set_ref == 0)    set_modulation_Mutation_native_dAM_VA(p);
-	if (p->ACh > 0.0                        && p->ACh_set_ref == 0)         set_modulation_ACh_dAM_VA(p);
+	if (                                       p->Het_set_ref == 0)         set_celltype_native_mCRN(p);
+	if (p->ISO > 0.0                        && p->ISO_set_ref == 0)         set_modulation_ISO_native_mCRN(p);
+	if (strcmp(p->Agent, "none") != 0       && p->Agent_set_ref == 0)       set_modulation_Agent_native_mCRN(p);
+	if (strcmp(p->Remodelling, "none") != 0 && p->Remodelling_set_ref == 0) set_modulation_Remodelling_native_mCRN(p);
+	if (strcmp(p->Mutation, "none") != 0    && p->Mutation_set_ref == 0)    set_modulation_Mutation_native_mCRN(p);
+	if (p->ACh > 0.0                        && p->ACh_set_ref == 0)         set_modulation_ACh_mCRN(p);
 }
 
-void update_het_and_mod_dAM_VA_integrated(Cell_parameters *p)
+void update_het_and_mod_mCRN_integrated(Cell_parameters *p)
 {
-    update_celltype_integrated_dAM_VA(p);
+    update_celltype_integrated_mCRN(p);
 }
 
 // Celltype/Heterogeneity
-void set_celltype_native_dAM_VA(Cell_parameters *p)
+void set_celltype_native_mCRN(Cell_parameters *p)
 {
 	// ================================================================================\\|
 	// Can modify parameters (e.g. conductance) directly, or scaling factors.
@@ -259,12 +260,12 @@ void set_celltype_native_dAM_VA(Cell_parameters *p)
 	}
 	else 
 	{
-		printf("ERROR: \"%s\" is not a valid Celltype for the dAM_VA models. Please check Model.c and Model_dAM_VA.cpp for options\n\n", p->Celltype);
+		printf("ERROR: \"%s\" is not a valid Celltype for the mCRN models. Please check Model.c and Model_mCRN.cpp for options\n\n", p->Celltype);
 		exit(1);
 	}
 }
 
-void update_celltype_integrated_dAM_VA(Cell_parameters *p)
+void update_celltype_integrated_mCRN(Cell_parameters *p)
 {
     // Basically, here are any het differences in integrated which are not present in native, which result from the diff Ca handling system behaviour
     if (strcmp(p->Celltype, "BB") == 0)
@@ -282,7 +283,7 @@ void update_celltype_integrated_dAM_VA(Cell_parameters *p)
 }
 
 // ISO
-void set_modulation_ISO_native_dAM_VA(Cell_parameters *p)
+void set_modulation_ISO_native_mCRN(Cell_parameters *p)
 {
 	// ================================================================================\\|
 	// Can modify parameters (e.g. conductance) directly, or scaling factors.
@@ -316,13 +317,13 @@ void set_modulation_ISO_native_dAM_VA(Cell_parameters *p)
 	// Add new ISO_models here: else if (strcmp(p->ISO_model, "X") == 0) {   }
 	else
 	{
-		printf("ERROR: \"%s\" is not a valid ISO model for the dAM_VA models. Please check Model.c and Model_dAM_VA.cpp for options\n\n", p->ISO_model);
+		printf("ERROR: \"%s\" is not a valid ISO model for the mCRN models. Please check Model.c and Model_mCRN.cpp for options\n\n", p->ISO_model);
 		exit(1);
 	}
 }
 
 // Pharmacological modulation
-void set_modulation_Agent_native_dAM_VA(Cell_parameters *p)
+void set_modulation_Agent_native_mCRN(Cell_parameters *p)
 {
 	// ================================================================================\\|
 	// Can modify parameters (e.g. conductance) directly, or scaling factors.
@@ -354,13 +355,13 @@ void set_modulation_Agent_native_dAM_VA(Cell_parameters *p)
 	// Add new pharmacological agent here: else if (strcmp(p->Agent, "X") == 0) {   }
 	else
 	{
-		printf("ERROR: \"%s\" is not a valid pharmacological agent for the dAM_VA models. Please check Model.c and Model_dAM_VA.cpp for options\n\n", p->Agent);
+		printf("ERROR: \"%s\" is not a valid pharmacological agent for the mCRN models. Please check Model.c and Model_mCRN.cpp for options\n\n", p->Agent);
 		exit(1);
 	}
 }
 
 // Remodelling
-void set_modulation_Remodelling_native_dAM_VA(Cell_parameters *p)
+void set_modulation_Remodelling_native_mCRN(Cell_parameters *p)
 {
 	// ================================================================================\\|
 	// Can modify parameters (e.g. conductance) directly, or scaling factors.
@@ -394,231 +395,187 @@ void set_modulation_Remodelling_native_dAM_VA(Cell_parameters *p)
 	//	p->Gleak            *= (1.0 + p->Remodelling_prop*(0.5  - 1.0));
 	//	p->GRyR_kCO			*= (1.0 + p->Remodelling_prop*(2.0  - 1.0));
 	//}
-    else if (strcmp(p->Remodelling, "AF_moderate") == 0)
+    else if (strcmp(p->Remodelling, "AF") == 0)
     {
-        p->GNa              *= (1.0 + p->Remodelling_prop*(0.9 - 1.0));
-        p->GCaL             *= (1.0 + p->Remodelling_prop*(0.47 - 1.0));
-        p->GK1              *= (1.0 + p->Remodelling_prop*(1.8 - 1.0));
-        p->Gto              *= (1.0 + p->Remodelling_prop*(0.54 - 1.0));
-        p->GNCX             *= (1.0 + p->Remodelling_prop*(1.64 - 1.0));
-        p->GKACh            *= (1.0 + p->Remodelling_prop*(1.8 - 1.0));
+        p->GNa                  *= (1.0 + p->Remodelling_prop*(0.5  -1));
+        p->GCaL                 *= (1.0 + p->Remodelling_prop*(0.35  -1));
+        p->Gto                  *= (1.0 + p->Remodelling_prop*(0.2  -1));
+        p->GKur                 *= (1.0 + p->Remodelling_prop*(0.75  -1));
+        p->GKr                  *= (1.0 + p->Remodelling_prop*(3  -1));
+        p->GKs                  *= (1.0 + p->Remodelling_prop*(3  -1));
+        p->GKACh                *= (1.0 + p->Remodelling_prop*(1.8 - 1.0));
     }
-    else if (strcmp(p->Remodelling, "AF_advanced") == 0)
+    else if (strcmp(p->Remodelling, "test") == 0)
     {
-        p->GNa              *= (1.0 + p->Remodelling_prop*(0.8 - 1.0));
-        p->GCaL             *= (1.0 + p->Remodelling_prop*(0.31 - 1.0));
-        p->GK1              *= (1.0 + p->Remodelling_prop*(2.57 - 1.0));
-        p->Gto              *= (1.0 + p->Remodelling_prop*(0.38 - 1.0));
-        p->GNCX             *= (1.0 + p->Remodelling_prop*(2.34 - 1.0));
-        p->GKACh            *= (1.0 + p->Remodelling_prop*(2.57 - 1.0));
+        p->Gto              *= (1.0 + p->Remodelling_prop*(3.0-1.0));    // At maximal effect, x3, 
+        p->IKr_va_ss_kscale *= (1.0 + p->Remodelling_prop*(0.5-1.0));    // At maximal effect, x0.5
+        p->ICaL_vi_ss_shift += p->Remodelling_prop*5;                    // At maximal effect, + 5
+        p->Ito_va_tau_scale *= (1.0 + p->Remodelling_prop*(2.3-1.0));    // At maximal effect x2.3
+        p->Gup              *= (1.0 + p->Remodelling_prop*(2.5-1.0));    // At maximal effect, x2.5
     }
-	else if (strcmp(p->Remodelling, "short_AP") == 0)
-	{
-		p->GKr              *= (1.0 + p->Remodelling_prop*(2.5  - 1.0));
-		p->GKs              *= (1.0 + p->Remodelling_prop*(2.5  - 1.0));
-		p->Gup              *= (1.0 + p->Remodelling_prop*(1.5  - 1.0));
-
-		p->RyR_mon_tau      = 5;           // ms
-		p->RyR_mi_tau       = 10;           // ms
-		p->RyR_mon_beta_tau = 50;          // ms
-		p->RyR_mi_beta_tau  = 20;           // ms
-		p->RyR_mon_grad     = 2.0;
-	}
-	else if (strcmp(p->Remodelling, "shorter_AP") == 0)
-	{
-		p->GKr              *= (1.0 + p->Remodelling_prop*(2.5  - 1.0));
-		p->GK1              *= (1.0 + p->Remodelling_prop*(1.25 - 1.0));
-		p->GKs              *= (1.0 + p->Remodelling_prop*(2.5  - 1.0));
-		p->Gup              *= (1.0 + p->Remodelling_prop*(1.5  - 1.0));
-		p->GCaL				*= (1.0 + p->Remodelling_prop*(0.8  - 1.0));
-		p->GRyR_kCO         *= (1.0 + p->Remodelling_prop*(1.5  - 1.0));
-		p->GNCX             *= (1.0 + p->Remodelling_prop*(0.5 - 1.0));
-		p->GCaP             *= (1.0 + p->Remodelling_prop*(0.5 - 1.0));
-
-		p->RyR_mon_tau      = 5;           // ms
-		p->RyR_mi_tau       = 10;           // ms
-		p->RyR_mon_beta_tau = 50;          // ms
-		p->RyR_mi_beta_tau  = 20;           // ms
-		p->RyR_mon_grad     = 2.0;
-	}
-	else if (strcmp(p->Remodelling, "pAF") == 0) // Voigt 2014 like remodelling for pAF: increased RyR_Po and SERCA
-	{
-		p->GRyR_kCO         *= (1.0 + p->Remodelling_prop*(1.25  - 1.0));
-		p->Gup              *= (1.0 + p->Remodelling_prop*(2.0  - 1.0));
-		//p->GNCX             *= (1.0 + p->Remodelling_prop*(1.25 - 1.0));
-	}
-	// testing exmaple illustration of model-specific implementation
-	else if (strcmp(p->Remodelling, "test") == 0)
-	{
-		p->Gto              *= (1.0 + p->Remodelling_prop*(3.0-1.0));    // At maximal effect, x3, 
-		p->IKr_va_ss_kscale *= (1.0 + p->Remodelling_prop*(0.5-1.0));    // At maximal effect, x0.5
-		p->ICaL_vi_ss_shift += p->Remodelling_prop*5;                    // At maximal effect, + 5
-		p->Ito_va_tau_scale *= (1.0 + p->Remodelling_prop*(2.3-1.0));    // At maximal effect x2.3
-		p->Gup              *= (1.0 + p->Remodelling_prop*(2.5-1.0));    // At maximal effect, x2.5
-	}
-	// Add new Remodelling here: else if (strcmp(p->Remodelling, "X") == 0) {   }
-	else
-	{
-		printf("ERROR: \"%s\" is not a valid Remodelling model for the dAM_VA models. Please check Model.c and Model_dAM_VA.cpp for options\n\n", p->Remodelling);
-		exit(1);
-	}
+    // Add new Remodelling here: else if (strcmp(p->Remodelling, "X") == 0) {   }
+    else
+    {
+        printf("ERROR: \"%s\" is not a valid Remodelling model for the mCRN models. Please check Model.c and Model_mCRN.cpp for options\n\n", p->Remodelling);
+        exit(1);
+    }
 }
 
 // Mutation
-void set_modulation_Mutation_native_dAM_VA(Cell_parameters *p)
+void set_modulation_Mutation_native_mCRN(Cell_parameters *p)
 {
-	// ================================================================================\\|
-	// Can modify parameters (e.g. conductance) directly, or scaling factors.
-	// (conductance denoted "g", scale factor "G"; current = f(g*G))
-	// In general, use the scale factors as these are multiplicative/additive throughout
-	// the code. 
-	// Only use the parameter itself when wanting to set its baseline value (which will still be modded by the modifier)
-	// ===========================================
-	// NOTE:: Ensure setting only model-specific conditions here - global defined in Model.c
-	// ================================================================================//|
+    // ================================================================================\\|
+    // Can modify parameters (e.g. conductance) directly, or scaling factors.
+    // (conductance denoted "g", scale factor "G"; current = f(g*G))
+    // In general, use the scale factors as these are multiplicative/additive throughout
+    // the code. 
+    // Only use the parameter itself when wanting to set its baseline value (which will still be modded by the modifier)
+    // ===========================================
+    // NOTE:: Ensure setting only model-specific conditions here - global defined in Model.c
+    // ================================================================================//|
 
-	if (strcmp(p->Mutation, "none") == 0); // do nothing
-	// testing exmaple illustration of model-specific implementation
-	else if (strcmp(p->Mutation, "test") == 0)
-	{
-		p->Gto              *= 2;       // Scale factor = Multiplies previous settings
-		p->gKur             = 0.003;    // Actual conductance explicitly set. Will overwrite any previous settings of g, but not scale factor mods. 
-		p->IKr_va_ss_kscale *= 1.25;    // Multiplies gradient parameter for voltage-activation steady-state. Multiplies previous settings
-		p->ICaL_vi_ss_shift += 5;       // Shifts the voltage dependence of the steady state of inactivation gate. Summed to previous settings
-		p->IKs_va_tau_scale *= 0.75;    // Multiplies time constant of voltage activation. Multiplies previous settings.
-		p->Gup              *= 2;       // Scales intracellular upatke rate. Multiplies previous settings.
-	}
-	// Add new mutation here: else if (strcmp(p->mutation, "X") == 0) {   }
-	else
-	{
-		printf("ERROR: \"%s\" is not a valid Mutation model for the dAM_VA models. Please check Model.c and Model_dAM_VA.cpp for options\n\n", p->Mutation);
-		exit(1);
-	}
+    if (strcmp(p->Mutation, "none") == 0); // do nothing
+                                           // testing exmaple illustration of model-specific implementation
+    else if (strcmp(p->Mutation, "test") == 0)
+    {
+        p->Gto              *= 2;       // Scale factor = Multiplies previous settings
+        p->gKur             = 0.003;    // Actual conductance explicitly set. Will overwrite any previous settings of g, but not scale factor mods. 
+        p->IKr_va_ss_kscale *= 1.25;    // Multiplies gradient parameter for voltage-activation steady-state. Multiplies previous settings
+        p->ICaL_vi_ss_shift += 5;       // Shifts the voltage dependence of the steady state of inactivation gate. Summed to previous settings
+        p->IKs_va_tau_scale *= 0.75;    // Multiplies time constant of voltage activation. Multiplies previous settings.
+        p->Gup              *= 2;       // Scales intracellular upatke rate. Multiplies previous settings.
+    }
+    // Add new mutation here: else if (strcmp(p->mutation, "X") == 0) {   }
+    else
+    {
+        printf("ERROR: \"%s\" is not a valid Mutation model for the mCRN models. Please check Model.c and Model_mCRN.cpp for options\n\n", p->Mutation);
+        exit(1);
+    }
 }
 // ACh ===================================\\|
-void set_modulation_ACh_dAM_VA(Cell_parameters *p)
+void set_modulation_ACh_mCRN(Cell_parameters *p)
 {
-	// ================================================================================\\|
-	// Can modify parameters (e.g. conductance) directly, or scaling factors.
-	// (conductance denoted "g", scale factor "G"; current = f(g*G))
-	// In general, use the scale factors as these are multiplicative/additive throughout
-	// the code. 
-	// Only use the parameter itself when wanting to set its baseline value (which will still be modded by the modifier)
-	// ===========================================
-	// "p->ACh" is concentration of ACh; "p->ACh_model" is the ACh model to be applied
-	// ===========================================
-	// This approach assumes linear transition between ACh = 0 and full effect at ACh = 1. 
-	// If non-linear effect is reqired, multiply by another function:
-	// e.g. double ACh_scaled = 1/ ( 1 + exp((-4.362*(log(p->ACh) + 3.27)) ) )  and use "ACh_scaled" in all below functions
-	// This could be done per target for different dose dependency
-	// ===========================================
-	// NOTE:: Ensure setting only model-specific conditions here - global defined in Model.c
-	// ================================================================================//|
+    // ================================================================================\\|
+    // Can modify parameters (e.g. conductance) directly, or scaling factors.
+    // (conductance denoted "g", scale factor "G"; current = f(g*G))
+    // In general, use the scale factors as these are multiplicative/additive throughout
+    // the code. 
+    // Only use the parameter itself when wanting to set its baseline value (which will still be modded by the modifier)
+    // ===========================================
+    // "p->ACh" is concentration of ACh; "p->ACh_model" is the ACh model to be applied
+    // ===========================================
+    // This approach assumes linear transition between ACh = 0 and full effect at ACh = 1. 
+    // If non-linear effect is reqired, multiply by another function:
+    // e.g. double ACh_scaled = 1/ ( 1 + exp((-4.362*(log(p->ACh) + 3.27)) ) )  and use "ACh_scaled" in all below functions
+    // This could be done per target for different dose dependency
+    // ===========================================
+    // NOTE:: Ensure setting only model-specific conditions here - global defined in Model.c
+    // ================================================================================//|
 
-	// testing exmaple illustration of model-specific implementation
+    // testing exmaple illustration of model-specific implementation
 
-	// NOTE: if the model does not have IKACh (or If) in, then modifying them won't make a difference!
-	/*if (strcmp(p->ACh_model, "default") == 0)
-	  {
-	// Put actual things in here
-	}          
-	else*/ if (strcmp(p->ACh_model, "test") == 0)  // just an example of how to implement: NOT an actual implementation
-	{
-		p->gKACh    		= p->gKACh_max * ( pow(p->ACh, 1.5) / ( pow(2.8e-1, 1.5) + pow(p->ACh, 1.5) ) );
-		// OR
-		p->gKACh			*= (1.0 + p->ACh*(2.5-1.0));
-		p->If_va_ss_shift 	+= -7.2*p->ACh;
-		p->Gto              *= (1.0 + p->ACh*(3.0-1.0));    // At maximal effect, x3,
-	}
-	else
-	{
-		printf("ERROR: \"%s\" is not a valid ACh for the dAM_VA model. Please check Model_dAM_VA.cpp for options\n\n", p->ACh_model);
-		exit(1);
-	}
+    // NOTE: if the model does not have IKACh (or If) in, then modifying them won't make a difference!
+    /*if (strcmp(p->ACh_model, "default") == 0)
+      {
+    // Put actual things in here
+    }          
+    else*/ if (strcmp(p->ACh_model, "test") == 0)  // just an example of how to implement: NOT an actual implementation
+    {
+        p->gKACh    		= p->gKACh_max * ( pow(p->ACh, 1.5) / ( pow(2.8e-1, 1.5) + pow(p->ACh, 1.5) ) );
+        // OR
+        p->gKACh			*= (1.0 + p->ACh*(2.5-1.0));
+        p->If_va_ss_shift 	+= -7.2*p->ACh;
+        p->Gto              *= (1.0 + p->ACh*(3.0-1.0));    // At maximal effect, x3,
+    }
+    else
+    {
+        printf("ERROR: \"%s\" is not a valid ACh for the mCRN model. Please check Model_mCRN.cpp for options\n\n", p->ACh_model);
+        exit(1);
+    }
 }
 // End ACh ===============================//|
 // End heterogeneity and modulation =============================================================//|
 
 // Compute model functions ======================================================================\\|
 // Your model may have more or fewer currents than this template - just follow the procedure and add/delete as appropriate
-void compute_model_dAM_VA_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void compute_model_mCRN_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	compute_reversal_potentials(p, var, s);
-	set_gate_rates_dAM_VA_native(p, var, Vm, s->Cai);
-	update_gating_variables_dAM_VA_native(p, var, s, Vm, dt);
-	compute_Itot_dAM_VA_native(p, var, s, Vm);
-	comp_homeostasis_dAM_VA(p, var, s, Vm, dt);
+	set_gate_rates_mCRN_native(p, var, Vm, s->Cai);
+	update_gating_variables_mCRN_native(p, var, s, Vm, dt);
+	compute_Itot_mCRN_native(p, var, s, Vm);
+	comp_homeostasis_mCRN(p, var, s, Vm, dt);
 }
 
-void compute_model_dAM_VA_integrated(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void compute_model_mCRN_integrated(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
     compute_reversal_potentials(p, var, s);
-    set_gate_rates_dAM_VA_native(p, var, Vm, s->Cai);
-    update_gating_variables_dAM_VA_native(p, var, s, Vm, dt);
-    compute_Itot_dAM_VA_integrated(p, var, s, Vm);
+    set_gate_rates_mCRN_native(p, var, Vm, s->Cai);
+    update_gating_variables_mCRN_native(p, var, s, Vm, dt);
+    compute_Itot_mCRN_integrated(p, var, s, Vm);
     // NO homeostasis here, as done in Ca handling model
     // Can add a function which does K+ and Na+ cycling if required
 }
 
-void set_gate_rates_dAM_VA_native(Cell_parameters p, Model_variables *var, double Vm, double Cai)
+void set_gate_rates_mCRN_native(Cell_parameters p, Model_variables *var, double Vm, double Cai)
 {
     // Call only currents you need
     set_INa_LR_rates(p, var, Vm);				
-    set_Ito_dAM_VA_rates(p, var, Vm);
-    set_IKur_dAM_VA_rates(p, var, Vm);
-    set_IKs_dAM_VA_rates(p, var, Vm);
-    set_IKr_dAM_VA_rates(p, var, Vm);
-    set_IKACh_dAM_VA_rates(p, var, Vm);
-    set_IK1_dAM_VA_variables(p, var, Vm);
-    set_ICaL_dAM_VA_rates(p, var, Vm, Cai);
+    set_Ito_mCRN_rates(p, var, Vm);
+    set_IKur_mCRN_rates(p, var, Vm);
+    set_IKs_mCRN_rates(p, var, Vm);
+    set_IKr_mCRN_rates(p, var, Vm);
+    set_IKACh_mCRN_rates(p, var, Vm);
+    set_IK1_mCRN_variables(p, var, Vm);
+    set_ICaL_mCRN_rates(p, var, Vm, Cai);
 }
 
-void update_gating_variables_dAM_VA_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gating_variables_mCRN_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
     update_gates_INa_LR(p, var, s, Vm, dt); 	
-    update_gates_IKs_dAM_VA(p, var, s, Vm, dt);
-    update_gates_IKr_dAM_VA(p, var, s, Vm, dt);
-    update_gates_IKACh_dAM_VA(p, var, s, Vm, dt);
-    update_gates_ICaL_dAM_VA(p, var, s, Vm, dt);
-    update_gates_Ito_dAM_VA(p, var, s, Vm, dt);
-    update_gates_IKur_dAM_VA(p, var, s, Vm, dt);
+    update_gates_IKs_mCRN(p, var, s, Vm, dt);
+    update_gates_IKr_mCRN(p, var, s, Vm, dt);
+    update_gates_IKACh_mCRN(p, var, s, Vm, dt);
+    update_gates_ICaL_mCRN(p, var, s, Vm, dt);
+    update_gates_Ito_mCRN(p, var, s, Vm, dt);
+    update_gates_IKur_mCRN(p, var, s, Vm, dt);
 }
 
-void compute_Itot_dAM_VA_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_Itot_mCRN_native(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
     var->Itot   = 0;
 
     compute_INa_LR(p, var, s, Vm);					
-    compute_Ito_dAM_VA(p, var, s, Vm);
-    compute_ICaL_dAM_VA(p, var, s, Vm);
-    compute_IKur_dAM_VA(p, var, s, Vm);
-    compute_IKr_dAM_VA(p, var, s, Vm);
-    compute_IKs_dAM_VA(p, var, s, Vm);
-    compute_IKACh_dAM_VA(p, var, s, Vm);
-    compute_IK1_dAM_VA(p, var, s, Vm);
-    compute_INCX_dAM_VA(p, var, s, Vm);
-    compute_INaK_dAM_VA(p, var, s, Vm);
-    compute_ICaP_dAM_VA(p, var, s, Vm);
-    compute_INab_dAM_VA(p, var, s, Vm);
-    compute_ICab_dAM_VA(p, var, s, Vm);
+    compute_Ito_mCRN(p, var, s, Vm);
+    compute_ICaL_mCRN(p, var, s, Vm);
+    compute_IKur_mCRN(p, var, s, Vm);
+    compute_IKr_mCRN(p, var, s, Vm);
+    compute_IKs_mCRN(p, var, s, Vm);
+    compute_IKACh_mCRN(p, var, s, Vm);
+    compute_IK1_mCRN(p, var, s, Vm);
+    compute_INCX_mCRN(p, var, s, Vm);
+    compute_INaK_mCRN(p, var, s, Vm);
+    compute_ICaP_mCRN(p, var, s, Vm);
+    compute_INab_mCRN(p, var, s, Vm);
+    compute_ICab_mCRN(p, var, s, Vm);
 
     // Add all the computed currents here
     var->Itot   = var->INa + var->Ito + var->ICaL + var->IKur + var->IKr + var->IKs + var->IKACh + var->IK1 + var->INCX + var->INaK + var->ICaP + var->INab + var->ICab + var->IClb;
 }
 
-void compute_Itot_dAM_VA_integrated(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_Itot_mCRN_integrated(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
     var->Itot   = 0;
 
     compute_INa_LR(p, var, s, Vm);
-    compute_Ito_dAM_VA(p, var, s, Vm);
-    compute_IKur_dAM_VA(p, var, s, Vm);
-    compute_IKr_dAM_VA(p, var, s, Vm);
-    compute_IKs_dAM_VA(p, var, s, Vm);
-    compute_IKACh_dAM_VA(p, var, s, Vm);
-    compute_IK1_dAM_VA(p, var, s, Vm);
-    compute_INaK_dAM_VA(p, var, s, Vm);
-    compute_INab_dAM_VA(p, var, s, Vm);
+    compute_Ito_mCRN(p, var, s, Vm);
+    compute_IKur_mCRN(p, var, s, Vm);
+    compute_IKr_mCRN(p, var, s, Vm);
+    compute_IKs_mCRN(p, var, s, Vm);
+    compute_IKACh_mCRN(p, var, s, Vm);
+    compute_IK1_mCRN(p, var, s, Vm);
+    compute_INaK_mCRN(p, var, s, Vm);
+    compute_INab_mCRN(p, var, s, Vm);
 
     // Add all the non-Ca computed currents here
     var->Itot   = var->INa + var->Ito + var->IKur + var->IKr + var->IKs + var->IKACh + var->IK1 + var->INaK + var->INab + var->IClb;
@@ -633,7 +590,7 @@ void compute_Itot_dAM_VA_integrated(Cell_parameters p, Model_variables *var, Sta
 // End INa ==================================================================//|
 
 // Ito ======================================================================\\|
-void set_Ito_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
+void set_Ito_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm)
 {
     // First, assign local voltages for each gate and type such that shifts can be applied by MODIFIERS
     //e.g.:
@@ -657,14 +614,14 @@ void set_Ito_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
 	var->Ito_vi_tau			*= p.Ito_vi_tau_scale;
 }
 
-void update_gates_Ito_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gates_Ito_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	// Update the gates, using rush_larsen, forward Euler, or other
 	s->Ito_va              = rush_larsen(s->Ito_va, var->Ito_va_ss, var->Ito_va_tau, dt);
 	s->Ito_vi              = rush_larsen(s->Ito_vi, var->Ito_vi_ss, var->Ito_vi_tau, dt);
 }
 
-void compute_Ito_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_Ito_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	// And finally, compute the actual current
 	var->Ito				= p.gto * pow(s->Ito_va, 3) * s->Ito_vi * (Vm - var->EK);
@@ -678,17 +635,17 @@ void compute_Ito_dAM_VA(Cell_parameters p, Model_variables *var, State_variables
 // e.g. for spatial cell models or spontaneous release functions, please 
 // follow the procedure below; voltage-dependent gates have their own
 // functions so can be called elsewhere (i.e. from CRU)
-void set_ICaL_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm, double Cai)
+void set_ICaL_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm, double Cai)
 {
 	double Vm_ac_ss         = Vm - p.ICaL_va_ss_shift;    // Voltage modified by shift applied to activation steady state
 	double Vm_inac_ss       = Vm - p.ICaL_vi_ss_shift;    // Voltage modified by shift applied to inactivation steady state
 	double Vm_ac_tau        = Vm - p.ICaL_va_tau_shift;   // Voltage modified by shift applied to activation time constant
 	double Vm_inac_tau      = Vm - p.ICaL_vi_tau_shift;   // Voltage modified by shift applied to inactivation time constant
 
-	set_ICaL_dAM_VA_va_rates(p, &var->ICaL_va_ss, &var->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);
+	set_ICaL_mCRN_va_rates(p, &var->ICaL_va_ss, &var->ICaL_va_tau, Vm_ac_ss, Vm_ac_tau, p.ICaL_va_ss_kscale);
 	var->ICaL_va_tau        *= p.ICaL_va_tau_scale;
 
-	set_ICaL_dAM_VA_vi_rates(p, &var->ICaL_vi_ss, &var->ICaL_vi_tau, Vm_inac_ss, Vm_inac_tau, p.ICaL_vi_ss_kscale);
+	set_ICaL_mCRN_vi_rates(p, &var->ICaL_vi_ss, &var->ICaL_vi_tau, Vm_inac_ss, Vm_inac_tau, p.ICaL_vi_ss_kscale);
 	var->ICaL_vi_tau        *= p.ICaL_vi_tau_scale;
 
 	// calcium inactivation
@@ -696,7 +653,7 @@ void set_ICaL_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm, d
 	var->ICaL_ci_tau	= 2.0;
 }
 
-void set_ICaL_dAM_VA_va_rates(Cell_parameters p, double *va_ss, double *va_tau, double Vm_ss, double Vm_tau, double kscale)
+void set_ICaL_mCRN_va_rates(Cell_parameters p, double *va_ss, double *va_tau, double Vm_ss, double Vm_tau, double kscale)
 {
 	*va_ss        = sigmoid(Vm_ss, -2.0, -5.0*kscale);  // V, V1/2, k 1/(1+exp((V-V1/2)/k)
 	if (fabs(Vm_tau - 10) < 1e-10)
@@ -706,21 +663,21 @@ void set_ICaL_dAM_VA_va_rates(Cell_parameters p, double *va_ss, double *va_tau, 
 	else *va_tau                    = (1.0/(1.0+exp((Vm_tau +10.0)/-6.24)))*(1.0-exp((Vm_tau +10.0)/-6.24))/(0.035*(Vm_tau +10.0));
 }
 
-void set_ICaL_dAM_VA_vi_rates(Cell_parameters p, double *vi_ss, double *vi_tau, double Vm_ss, double Vm_tau, double kscale)
+void set_ICaL_mCRN_vi_rates(Cell_parameters p, double *vi_ss, double *vi_tau, double Vm_ss, double Vm_tau, double kscale)
 {
 	*vi_ss      = sigmoid(Vm_ss, -34, 6.3*kscale);  // V, V1/2, k 1/(1+exp((V-V1/2)/k)
 	*vi_tau  	= 400.0/(1+4.5*exp(-0.0007*pow(Vm_tau -9,2.0)));
 }
 
 // Everything else follows the same format
-void update_gates_ICaL_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gates_ICaL_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	s->ICaL_va       		= rush_larsen(s->ICaL_va, var->ICaL_va_ss, var->ICaL_va_tau, dt);
 	s->ICaL_vi    			= rush_larsen(s->ICaL_vi, var->ICaL_vi_ss, var->ICaL_vi_tau, dt);
 	s->ICaL_ci    			= rush_larsen(s->ICaL_ci, var->ICaL_ci_ss, var->ICaL_ci_tau, dt);
 }
 
-void compute_ICaL_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_ICaL_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->ICaL   			= p.gCaL * s->ICaL_va * s->ICaL_vi * s->ICaL_ci * (Vm - 60);
 	var->ICaL 				*= p.GCaL;
@@ -728,7 +685,7 @@ void compute_ICaL_dAM_VA(Cell_parameters p, Model_variables *var, State_variable
 // End ICaL =================================================================//|
 
 // IKur =====================================================================\\|
-void set_IKur_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
+void set_IKur_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm)
 {
 	double Vm_ac_ss         = Vm - p.IKur_va_ss_shift;   // Voltage modified by shift applied to activation steady state
 	double Vm_inac_ss       = Vm - p.IKur_vi_ss_shift;   // Voltage modified by shift applied to inactivation steady state
@@ -751,13 +708,13 @@ void set_IKur_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
 	var->IKur_dynamic_g		= 1.0+3.0/(1.0+exp((Vm -14.0)/-6.0));
 }
 
-void update_gates_IKur_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gates_IKur_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	s->IKur_va                      = rush_larsen(s->IKur_va, var->IKur_va_ss, var->IKur_va_tau, dt);
 	s->IKur_vi                      = rush_larsen(s->IKur_vi, var->IKur_vi_ss, var->IKur_vi_tau, dt);
 }
 
-void compute_IKur_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_IKur_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->IKur 				= p.gKur * var->IKur_dynamic_g * pow(s->IKur_va, 3) * s->IKur_vi * (Vm - var->EK);
 	var->IKur				*= p.GKur;
@@ -765,7 +722,7 @@ void compute_IKur_dAM_VA(Cell_parameters p, Model_variables *var, State_variable
 // End IKur =================================================================//|
 
 // IKr ======================================================================\\|
-void set_IKr_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
+void set_IKr_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm)
 {
 	double Vm_ac_ss         = Vm - p.IKr_va_ss_shift;   // Voltage modified by shift applied to activation steady state
 	double Vm_ac_tau        = Vm - p.IKr_va_tau_shift;  // Voltage modified by shift applied to activation time constant
@@ -791,12 +748,12 @@ void set_IKr_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
 	  }*/
 }
 
-void update_gates_IKr_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gates_IKr_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	s->IKr_va               = rush_larsen(s->IKr_va, var->IKr_va_ss, var->IKr_va_tau, dt);
 }
 
-void compute_IKr_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_IKr_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->IKr 				= p.gKr * s->IKr_va * var->IKr_vi_ti * (Vm - var->EK);
 	var->IKr 				*= p.GKr;
@@ -804,7 +761,7 @@ void compute_IKr_dAM_VA(Cell_parameters p, Model_variables *var, State_variables
 // End IKr ==================================================================//|
 
 // IKs ======================================================================\\|
-void set_IKs_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
+void set_IKs_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm)
 {
 	double Vm_ac_ss         = Vm - p.IKs_va_ss_shift;   // Voltage modified by shift applied to activation steady state
 	double Vm_ac_tau        = Vm - p.IKs_va_tau_shift;  // Voltage modified by shift applied to activation time constant
@@ -824,12 +781,12 @@ void set_IKs_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
 	var->IKs_va_tau				 *= p.IKs_va_tau_scale;
 }
 
-void update_gates_IKs_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gates_IKs_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	s->IKs_va               = rush_larsen(s->IKs_va, var->IKs_va_ss, var->IKs_va_tau, dt);
 }
 
-void compute_IKs_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_IKs_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->IKs		= p.gKs * s->IKs_va*s->IKs_va * (Vm - var->EK);
 	var->IKs		*= p.GKs;
@@ -837,7 +794,7 @@ void compute_IKs_dAM_VA(Cell_parameters p, Model_variables *var, State_variables
 // End IKs ==================================================================//|
 
 // IKACh =====================================================================\\|
-void set_IKACh_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
+void set_IKACh_mCRN_rates(Cell_parameters p, Model_variables *var, double Vm)
 {
 	double Vm_ac_ss         = Vm - p.IKACh_va_ss_shift;   // Voltage modified by shift applied to activation steady state
 	double Vm_ac_tau        = Vm - p.IKACh_va_tau_shift;  // Voltage modified by shift applied to activation time constant
@@ -849,12 +806,12 @@ void set_IKACh_dAM_VA_rates(Cell_parameters p, Model_variables *var, double Vm)
 	var->IKACh_v_ti			= 1.0/(0.1+exp(0.078*(Vm - var->EK -65.0)));
 }
 
-void update_gates_IKACh_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void update_gates_IKACh_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	s->IKACh_va               = rush_larsen(s->IKACh_va, var->IKACh_va_ss, var->IKACh_va_tau, dt);
 }
 
-void compute_IKACh_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_IKACh_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->IKACh        = p.gKACh * s->IKACh_va * var->IKACh_v_ti * (Vm - var->EK);
 	var->IKACh        *= p.GKACh;
@@ -862,13 +819,13 @@ void compute_IKACh_dAM_VA(Cell_parameters p, Model_variables *var, State_variabl
 // End IKACh ==================================================================//|
 
 // IK ======================================================================\\|
-void set_IK1_dAM_VA_variables(Cell_parameters p, Model_variables *var, double Vm)
+void set_IK1_mCRN_variables(Cell_parameters p, Model_variables *var, double Vm)
 {
 	double Vm_in        = Vm - p.IK1_va_shift;
 	var->IK1_va_ti      = (p.IK1_den_add_factor*1.0 + exp(p.IK1_VEexp_scale*0.072*(Vm_in-(var->EK))));
 }
 
-void compute_IK1_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_IK1_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->IK1            = p.gK1 *  (Vm - (var->EK + p.IK1_Erev_shift))/var->IK1_va_ti; // NOTE!!!
 	var->IK1            *= p.GK1;
@@ -877,7 +834,7 @@ void compute_IK1_dAM_VA(Cell_parameters p, Model_variables *var, State_variables
 
 // Ca2+ handling, background and pump currents ==============================\\|
 // INCX
-void compute_INCX_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_INCX_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	double Cai          = s->Cai;
 	double Cao          = s->Cao;
@@ -891,7 +848,7 @@ void compute_INCX_dAM_VA(Cell_parameters p, Model_variables *var, State_variable
 }
 
 // INaK
-void compute_INaK_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_INaK_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	double sigma        = (exp(s->Nao/67.3)-1.0)/7.0;
 	double FNaK         = pow(1.0+0.1245*exp(-0.1*p.F*Vm/(p.R*p.T))+0.0365*sigma*exp(-Vm*p.FoRT ), -1.0);
@@ -900,35 +857,35 @@ void compute_INaK_dAM_VA(Cell_parameters p, Model_variables *var, State_variable
 }
 
 // ICaP
-void compute_ICaP_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_ICaP_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->ICaP           = (p.ICaP_bar * s->Cai) / (s->Cai + p.ICaP_kCa);
 	var->ICaP           *= p.GCaP;
 }
 
 // INab
-void compute_INab_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_INab_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->INab           = p.gNab * (Vm - var->ENa);
 	var->INab           *= p.GNab;
 }
 
 // ICab
-void compute_ICab_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+void compute_ICab_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->ICab           = p.gCab * (Vm - var->ECa);
 	var->ICab           *= p.GCab;
 }
 
-void compute_IClb_Varela_dAM(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
+/*void compute_IClb_Varela_dAM(Cell_parameters p, Model_variables *var, State_variables *s, double Vm)
 {
 	var->IClb                         = 8.0e-4 * (Vm - ((p.R * p.T)/p.F)*log(29.26/132)); // static || cli not updated
 	var->IClb	*= p.GClb;
-}
+}*/
 // End Ca2+ handling currents ===============================================//|
 
 // Homeostasis ==============================================================\\|
-void comp_homeostasis_dAM_VA(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
+void comp_homeostasis_mCRN(Cell_parameters p, Model_variables *var, State_variables *s, double Vm, double dt)
 {
 	// All calculated currents can be accessed in here through var e.g. var->ICaL, var->INCX or var->INCX_sl/j etc
 

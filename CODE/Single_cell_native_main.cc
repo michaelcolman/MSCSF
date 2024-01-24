@@ -206,11 +206,21 @@ int main(int argc, char *argv[])
     else if (Sim.Windows == true)               sprintf(mkfile, "%s\\%s\\Currents.txt", directory, results_dir);
     ofstream out_cu(mkfile);    // Contains all current related outputs
     printf("\t %s\n", mkfile);
+    
+    //if (Sim.Mac == true || Sim.Linux == true)   sprintf(mkfile, "%s/%s/Currents.csv", directory, results_dir);
+    //else if (Sim.Windows == true)               sprintf(mkfile, "%s\\%s\\Currents.csv", directory, results_dir);
+    //ofstream out_cu_csv(mkfile);    // Contains all current related outputs
+    //printf("\t %s\n", mkfile);
 
     if (Sim.Mac == true || Sim.Linux == true)   sprintf(mkfile, "%s/%s/Properties.txt", directory, results_dir);
     else if (Sim.Windows == true)               sprintf(mkfile, "%s\\%s\\Properties.txt", directory, results_dir);
     ofstream out_ex(mkfile);     // Contains all AP properties related outputs
     printf("\t %s\n", mkfile);
+    
+    //if (Sim.Mac == true || Sim.Linux == true)   sprintf(mkfile, "%s/%s/Properties.csv", directory, results_dir);
+    //else if (Sim.Windows == true)               sprintf(mkfile, "%s\\%s\\Properties.csv", directory, results_dir);
+    //ofstream out_ex_csv(mkfile);     // Contains all AP properties related outputs
+    //printf("\t %s\n", mkfile);
 
     printf("\n");
     free(mkfile);
@@ -372,14 +382,18 @@ int main(int argc, char *argv[])
 		Vm			= State.Vm;
 
 		// Output data to files
-		if (iteration_counter%(int)(1/Sim.dt) == 0) // if sim_time is an integer (i.e. per ms)
+		if (iteration_counter % Variables.dtinv == 0) // if sim_time is an integer (i.e. per ms)
 		{
 			output_currents(out_cu, sim_time, Variables, State, Vm);		// lib/Outputs.cpp || V, currents, gating variables, concs etc
 			output_excitation_properties(out_ex, sim_time, Variables, Vm);	// lib/Outputs.cpp || APD, excitation state, dv/dt etc
+			
+            // For csv if wanted
+            //output_currents_csv(out_cu_csv, sim_time, Variables, State, Vm);		// lib/Outputs.cpp || V, currents, gating variables, concs etc
+			//output_excitation_properties_csv(out_ex_csv, sim_time, Variables, Vm);	// lib/Outputs.cpp || APD, excitation state, dv/dt etc
 		}
 
 		iteration_counter ++; // number of steps in dt
-		if (iteration_counter%(2000*((int)(1/Sim.dt))) == 0) printf("Time = %.0fms\n",sim_time); // output every 2000 ms
+		if (iteration_counter%(2000*Variables.dtinv) == 0) printf("Time = %.0fms\n",sim_time); // output every 2000 ms
 	}
 	// End Time loop ============================================================================//|
 

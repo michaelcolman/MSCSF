@@ -724,6 +724,8 @@ typedef struct{
 	double	Istim_S2;			// S2 stimulus current (pA/pF)
 	bool	S2_stimflag;		// true IF S2 stimulus is being applied
 	int 	Paced_time_int;		// integer value of paced time (s1)
+    double  dtinv_double;       // 1/dt
+    int     dtinv;              // 1/dt as an integer (for conversions to iterations rather than dt)                                
 	// end Stimulus variables =====================================//|
 
 	// Reversal potentials ========================================\\|
@@ -1551,14 +1553,14 @@ typedef struct{
 
 	// Heterogeneity and non-uniformity parameters
 	int Ncelltypes;						// Number of different celltypes present in the tissue model
-	const char * celltype_number[20];	// Contains the string referencing each celltype at cell i
-	int	het_junction_X_location[20];	// Location (in x) to split celltypes
-	double non_uniform_D1_scale[20];	// Scales D2 (or Diso) for non-uniform diffusion coefficients by celltype
-	double non_uniform_AR_scale[20];	// Scales the anisotropy ratio (D1 relative to D2)
-	const char * Modeltype_number[20];	// Contains the string referencing each Model at cell i
+	const char * celltype_number[50];	// Contains the string referencing each celltype at cell i
+	int	het_junction_X_location[50];	// Location (in x) to split celltypes
+	double non_uniform_D1_scale[50];	// Scales D2 (or Diso) for non-uniform diffusion coefficients by celltype
+	double non_uniform_AR_scale[50];	// Scales the anisotropy ratio (D1 relative to D2)
+	const char * Modeltype_number[50];	// Contains the string referencing each Model at cell i
     
     // Disconnect regions variables
-    int disconnect_regions[20][2];      // dim 1 is number of pairs to disconnect, dim 2 is cell number of the 2 regions to disconnect
+    int disconnect_regions[50][2];      // dim 1 is number of pairs to disconnect, dim 2 is cell number of the 2 regions to disconnect
     bool disconnect_regions_flag;       // True to disconect regions, false otherwise
     int Ndisconnected_regions;          // number to disconnect (max 20)                                    
 

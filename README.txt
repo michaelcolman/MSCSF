@@ -19,7 +19,7 @@ Original source code presented with:
 
 NOT included in this package:
     The folder containing all geometry files (tissue and cell structures) and state files. These can be found here:
-    https://github.com/michaelcolman/MSCSF_state_and_geometry_files
+    https://zenodo.org/records/10563535
     and is kept up-to-date with additional geometry files associated with new publications
 ____________________________________________________________________
 

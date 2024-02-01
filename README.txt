@@ -25,25 +25,32 @@ ____________________________________________________________________
 
 ____________________________________________________________________
 Basic instructions for compiling and running the code under different conditions.
-Please see also "BASIC_INSTRUCTIONS_MODDING.txt" for how to update the code with new models and functionality
-Please see also example script files for examples and illustrations of performing different functionality
-See "Full_documentation.pdf" for the full disclaimer including citation list, and for more detailed breakdown
-code structure for more complex modding.
-See "Single_cell_model_list.txt" and "Tissue_model_list.txt"" for all available cell and tissue models, thier identifiers and filenames.
-____________________________________________________________________
-
 ____________________________________________________________________
 0) Package contents:
-    BASIC_USE.txt (this file)
-    BASIC_INSTRUCTIONS_MODIFICATION.txt
-    Full_documentation.pdf
-    CODE                            - source code for the framework
-    MSCSF_state_and_geometry_files  - directory containing all state and geometry files (see instruction 2).
-    Simulations                     - simulations folder
-    Example_scripts                 - further directories with example scripts for most functionality
-    Single_cell_model_list.txt
-    Tissue_model_list.txt
-____________________________________________________________________
+    Documentation
+        Full_documentation.pdf
+        Quick_text_docs
+            Basic_use.txt (essentially this file)
+            Basic_instructions_modification.txt
+            Network_model_use.txt
+            Single_cell_model_list.txt
+            Tissue_model_list.txt
+        Publication_specific_guidelines
+            Interface_focus_2023_Patchy_Fibrosis.pdf
+            Interface_focus_2023_Patchy_Fibrosis_data_script.sh
+
+    CODE
+        The full source code for the models
+
+    Example scripts
+        bash scripts illustrating example protocols
+
+    SRF_settings_files_Interface_focus_2023
+        Settings files for the Spontanoues Release Functions, as used in Interface Focus. 2023 Dec 15;13(6):20230041
+
+    Legacy
+        Old versions of the code
+________________________________________________________________________________________________________________________________________
 
 ____________________________________________________________________
 1) Compile the code (mac and Linux)
